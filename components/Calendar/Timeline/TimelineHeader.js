@@ -17,12 +17,13 @@ const TimelineHeader = ({
                 className={`
                   flex flex-col items-center justify-start
                   ${dates.length > 1 && 'flex-1'}
+                  ${dates.length === 1 && 'pl-3'}
                 `}
               >
                 <span className="flex items-center justify-center h-8 mt-2 font-medium tracking-widest text-gray-600 text-xxs">
                   {format(new Date(date), 'EEE').toUpperCase()}
                 </span>
-                <span className="flex items-center justify-center text-2xl tracking-wider w-11">
+                <span className="flex items-center justify-center text-2xl tracking-wider text-gray-700 w-11">
                   {format(new Date(date), 'd')}
                 </span>
               </div>

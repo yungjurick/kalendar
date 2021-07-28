@@ -49,6 +49,23 @@ const PanelLeftCalendar = () => {
     const monthRangeStart = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
     const monthRangeEnd = addWeeks(endOfWeek(endOfMonth(month), { weekStartsOn: 1 }), 1);
 
+    const dynamicDateColor = (today, date, targetDate, curDateMonth, targetMonth) => {
+      if (
+        (isEqualDate(today, date) && isEqualDate(targetDate, date)) ||
+        isEqualDate(today, date)
+      ){
+        return 'bg-blue-500 text-white hover:bg-blue-700'
+      }
+
+      if (isEqualDate(targetDate, date)) {
+        return 'bg-blue-300 text-blue-700 hover:bg-blue-400'
+      }
+
+      if ((curDateMonth !== targetMonth) && !isEqualDate(today, date)) {
+        return 'text-gray-400'
+      }
+    }
+
     const days = eachDayOfInterval({
       start: monthRangeStart,
       end: monthRangeEnd
@@ -63,9 +80,7 @@ const PanelLeftCalendar = () => {
           <p
             className={`
               flex items-center justify-center w-6 h-6 transition rounded-full hover:bg-gray-200
-              ${isEqualDate(today, date) && 'bg-blue-500 text-white hover:bg-blue-700'}
-              ${isEqualDate(targetDate, date) && 'bg-blue-300 text-blue-700 hover:bg-blue-400'}
-              ${(curDateMonth !== targetMonth) && !isEqualDate(today, date) && 'text-gray-400'}
+              ${dynamicDateColor(today, date, targetDate, curDateMonth, targetMonth)}
             `}
           >
             {getDate(date)}

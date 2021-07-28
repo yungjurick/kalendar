@@ -28,7 +28,8 @@ const CalendarDayView = () => {
   }
 
   useEffect(() => {
-    if (calendarViewType) {
+    if (targetDate) {
+      console.log("Fetching Data...", targetDate, calendarViewType)
       dispatch(fetchEventsForCalendarType({
         userUid: user.userUid,
         calendarViewType,

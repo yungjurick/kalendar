@@ -5,10 +5,7 @@ const Timeline = ({
   calendarViewType,
   data = {}
 }) => {
-  console.log(data);
-
   const dayViewTimeline = (data) => {
-    console.log(data);
     return Object.keys(data).map((h, i) => {
 
       const minuteSegments = Object.keys(data[h]).map(seg => {
@@ -18,8 +15,6 @@ const Timeline = ({
           colCount,
           baseZIndex
         } = data[h][seg]
-
-        // console.log(events);
 
         return (
           <div

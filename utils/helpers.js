@@ -1,11 +1,11 @@
-import { closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear } from 'date-fns'
+import { addDays, closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
 import { CalendarViewTypes } from './types'
 
 export const getBaseDayViewEvents = () => {
   const hours = Array(24).fill()
     .map((v, i) => i)
     .reduce((acc, cur) => {
-      acc[cur] = {
+      const segment = {
         0: {
           events: [],
           startColIndex: 0,
@@ -31,6 +31,7 @@ export const getBaseDayViewEvents = () => {
           baseZIndex: 1
         },
       }
+      acc[cur] = segment
       return acc
     }, {})
 
@@ -102,10 +103,11 @@ const getMonthOuterRangeDates = (targetStartDate, targetEndDate) => {
 }
 
 export const getBaseMonthViewEvents = (targetDate) => {
-  const numberOfDays = getDaysInMonth(targetDate);
+  const target = new Date(targetDate);
+  const numberOfDays = getDaysInMonth(target);
 
-  const monthStart = startOfMonth(new Date(targetDate)); 
-  const monthEnd = endOfMonth(new Date(targetDate));
+  const monthStart = startOfMonth(target); 
+  const monthEnd = endOfMonth(target);
 
   const [left, right] = getMonthOuterRangeDates(monthStart, monthEnd)
 
@@ -120,7 +122,7 @@ export const getBaseMonthViewEvents = (targetDate) => {
 
   return {
     [getMonth(left.leftOuterStart)]: left.leftOuterContainer,
-    [getMonth(targetDate)]: inner,
+    [getMonth(target)]: inner,
     [getMonth(right.rightOuterEnd)]: right.rightOuterContainer,
   }
 }
