@@ -2,10 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { CalendarViewTypes } from '../../utils/types';
 
 const initialState = {
-  targetDate: {
-    start: Date(),
-    end: Date()
-  },
+  targetDate: Date(),
   calendarViewType: CalendarViewTypes.DAY_VIEW
 }
 
@@ -13,11 +10,8 @@ export const calendarSettingSlice = createSlice({
   name: 'calendarSetting',
   initialState,
   reducers: {
-    setTargetStartDate: (state, action) => {
-      state.targetDate.start = action.payload
-    },
-    setTargetEndDate: (state, action) => {
-      state.targetDate.end = action.payload
+    setTargetDate: (state, action) => {
+      state.targetDate = action.payload
     },
     setViewType: (state, action) => {
       state.calendarViewType = action.payload
@@ -26,8 +20,7 @@ export const calendarSettingSlice = createSlice({
 })
 
 export const {
-  setTargetStartDate,
-  setTargetEndDate,
+  setTargetDate,
   setViewType
 } = calendarSettingSlice.actions
 

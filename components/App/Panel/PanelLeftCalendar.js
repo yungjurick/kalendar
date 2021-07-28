@@ -1,18 +1,16 @@
 import { addMonths, addWeeks, eachDayOfInterval, endOfMonth, endOfWeek, format, getDate, getMonth, isSameDay, setMonth, startOfMonth, startOfWeek, subMonths } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setTargetDate } from '../../../reducers/calendar/calendarSettingSlice';
+import { CalendarViewTypes } from '../../../utils/types';
 import IconButton from '../../Common/Button/IconButton';
 
 const PanelLeftCalendar = () => {
-  const { targetDate } = useSelector(state => state.calendarSetting);
+  const today = new Date();
+  const dispatch = useDispatch();
+  const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const [ calendarDate, setCalendarDate ] = useState(Date());
-
-  useEffect(() => {
-    if (targetDate.start) {
-      setCalendarDate(targetDate.start)
-    }
-  }, [targetDate.start])
 
   const isEqualDate = (a, b) => {
     const dateA = new Date(a);
@@ -23,7 +21,10 @@ const PanelLeftCalendar = () => {
 
   const gridHeader = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
     return (
-      <div key={i} className="flex items-center justify-center h-6 text-gray-500 text-xxs">
+      <div
+        key={i}
+        className="flex items-center justify-center h-6 text-gray-500 text-xxs"
+      >
         {d}
       </div>
     )
@@ -44,8 +45,19 @@ const PanelLeftCalendar = () => {
     }).map((date, i) => {
       const curDateMonth = getMonth(date);
       return (
-        <div key={i} className={`text-xxs flex items-center justify-center cursor-pointer`}>
-          <p className={`flex items-center justify-center w-6 h-6 transition rounded-full hover:bg-gray-200 ${(curDateMonth !== targetMonth) && !isEqualDate(targetDate.start, date) && 'text-gray-400'} ${isEqualDate(targetDate.start, date) && 'bg-blue-500 text-white hover:bg-blue-700'}`}>
+        <div
+          key={i}
+          className="flex items-center justify-center cursor-pointer text-xxs"
+          onClick={() => onClickDate(date) }
+        >
+          <p
+            className={`
+              flex items-center justify-center w-6 h-6 transition rounded-full hover:bg-gray-200
+              ${isEqualDate(today, date) && 'bg-blue-500 text-white hover:bg-blue-700'}
+              ${isEqualDate(targetDate, date) && 'bg-blue-300 text-blue-700 hover:bg-blue-400'}
+              ${(curDateMonth !== targetMonth) && !isEqualDate(today, date) && 'text-gray-400'}
+            `}
+          >
             {getDate(date)}
           </p>
         </div>
@@ -64,8 +76,25 @@ const PanelLeftCalendar = () => {
     }
   }
 
-  const calendarTitle = (startDate) => {
-    return format(new Date(startDate), "MMMM yyyy");
+  const onClickDate = (date) => {
+    switch (calendarViewType) {
+      case CalendarViewTypes.DAY_VIEW: {
+        dispatch(setTargetDate(date.toString()));
+        break;
+      }
+
+      case CalendarViewTypes.WEEK_VIEW: {
+        break;
+      }
+
+      case CalendarViewTypes.MONTH_VIEW: {
+        break;
+      }
+
+      case CalendarViewTypes.YEAR_VIEW: {
+        break;
+      }
+    }
   }
 
   return (

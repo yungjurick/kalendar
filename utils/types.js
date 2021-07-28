@@ -1,9 +1,9 @@
 export const ThemeColorTypes = {
 	RED: 0,
 	GREEN: 1,
-	YELLOW: 2,
+	GOLD: 2,
 	BLUE: 3,
-	SKYBLUE: 4,
+	CYAN: 4,
 	PURPLE: 5,
 	BROWN: 6,
 }

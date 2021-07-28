@@ -1,6 +1,8 @@
+import { EventRepeatTypes, RepeatChangesTypes } from './types'
+
 export const getInitialUserEvents = () => {
   return {
-    'Rick-1234': [],
+    'Rick-1234': ['event-0', 'event-1'],
     'Jason-1234': [],
     'Paul-1234': [],
     'Jenny-1234': [],
@@ -15,29 +17,29 @@ export const getInitialEvents = () => {
       eventUid: 'event-0',
       eventCreatorUid: 'Rick-1234',
       eventGroupUid: null,
-      startDate: new Date(2021, 7, 26, 22, 30),
-      endDate: new Date(2021, 7, 26, 23, 30),
+      startDate: Date(2021, 7, 26, 22, 30),
+      endDate: Date(2021, 7, 26, 23, 30),
       title: 'Sample Event',
       description: 'This is a sample event',
       themeColor: 0,
       location: '',
       invites: [],
       isAllDay: false,
-      createdAt: new Date(2021, 7, 26, 22, 30),
+      createdAt: Date(2021, 7, 26, 22, 30),
     },
-    'event-0': {
-      eventUid: 'event-0',
+    'event-1': {
+      eventUid: 'event-1',
       eventCreatorUid: 'Rick-1234',
       eventGroupUid: 'group-0',
-      startDate: new Date(2021, 7, 25, 13, 30),
-      endDate: new Date(2021, 7, 25, 14, 30),
+      startDate: Date(2021, 7, 25, 13, 30),
+      endDate: Date(2021, 7, 25, 14, 30),
       title: 'Sample Repeated Event',
       description: 'This is a sample repeated event',
       themeColor: 0,
       location: '',
       invites: [],
       isAllDay: false,
-      createdAt: new Date(2021, 7, 26, 22, 30),
+      createdAt: Date(2021, 7, 26, 22, 30),
     }
   }
 }
@@ -46,8 +48,15 @@ export const getInitialEventGroups = () => {
   return {
     'group-0': {
       groupUid: 'group-0',
-      repeatType: 0,
-      repeatChanges: {}
+      repeatType: EventRepeatTypes.DAILY,
+      repeatChanges: {
+        '2021-7-27': {
+          type: RepeatChangesTypes.CHANGE,
+          payload: {
+            title: 'Changed Title'
+          }
+        }
+      }
     }
   }
 }

@@ -44,7 +44,7 @@ export const HeaderBar = () => {
   return (
     <div className="flex w-full p-2 border-b">
       {/* Left Section */}
-      <div className="flex items-center justify-start w-1/6 pl-2 text-2xl min-w-248">
+      <div className="flex items-center justify-start pl-2 mr-12 text-2xl">
         <div className="p-1 ml-1 mr-2">
           <IconButton
             size="medium"
@@ -91,7 +91,7 @@ export const HeaderBar = () => {
             />
           </div>
           <div className="ml-5 text-xl text-gray-600">
-            {getHeaderTitle(targetDate.start, calendarViewType)}
+            {getHeaderTitle(targetDate, calendarViewType)}
           </div>
         </div>
       </div>

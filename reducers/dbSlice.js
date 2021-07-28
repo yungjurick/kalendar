@@ -1,11 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userDB: {},
-  eventDB: {},
-  invitedDB: {},
-  eventGroupDB: {},
-  eventInviteDB: {},
+  isDBLoaded: false,
+  db: {
+    userDB: {},
+    userEventDB: {},
+    eventDB: {},
+    invitedDB: {},
+    eventGroupDB: {},
+    eventInviteDB: {},
+  }
 }
 
 export const dbSlice = createSlice({
@@ -13,35 +17,8 @@ export const dbSlice = createSlice({
   initialState,
   reducers: {
     setDB: (state, action) => {
-      switch (action.payload.type) {
-        case 'user': {
-          state.userDB = action.payload.data
-          break
-        }
-
-        case 'event': {
-          state.eventDB = action.payload.data
-          break
-        }
-
-        case 'invite': {
-          state.inviteDB = action.payload.data
-          break
-        }
-
-        case 'eventGroup': {
-          state.eventGroupDB = action.payload.data
-          break
-        }
-
-        case 'eventInvite': {
-          state.eventInviteDB = action.payload.data
-          break
-        }
-
-        default:
-          break
-      }
+      state.db = action.payload
+      state.isDBLoaded = true
     }
   }
 })
