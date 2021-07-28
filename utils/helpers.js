@@ -1,4 +1,4 @@
-import { endOfDay, endOfMonth, endOfWeek, endOfYear, getDaysInMonth, getMonth, startOfDay, startOfMonth, startOfWeek, startOfYear } from 'date-fns'
+import { closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear } from 'date-fns'
 import { CalendarViewTypes } from './types'
 
 export const getBaseDayViewEvents = () => {
@@ -163,4 +163,20 @@ export const getDateRange = (calendarViewType, targetDate) => {
       ]
     }
   }
+}
+
+export const getClosestIndexForDayViewEvents = (date) => {
+	const ZERO = set(date, { minutes: 15 })
+	const FIFTEEN = set(date, { minutes: 15 })
+	const THIRTY = set(date, { minutes: 30 })
+	const FOURTYFIVE = set(date, { minutes: 45 })
+
+	const closest = closestTo(date, [
+		ZERO,
+		FIFTEEN,
+		THIRTY,
+		FOURTYFIVE
+	])
+
+	return [getHours(date), getMinutes(closest)];
 }

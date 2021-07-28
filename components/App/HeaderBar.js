@@ -132,7 +132,7 @@ export const HeaderBar = () => {
           <div className="flex ml-3 w-min">
             <IconButton
               size="small"
-              label="Previous Day"
+              label={`Previous ${viewTypeStringLookUp[calendarViewType]}`}
               tooltipLocation="bottom"
               imgComponent={
                 <MdKeyboardArrowLeft size="24px" color="rgba(75, 85, 99)"/>
@@ -141,7 +141,7 @@ export const HeaderBar = () => {
             />
             <IconButton
               size="small"
-              label="Next Day"
+              label={`Next ${viewTypeStringLookUp[calendarViewType]}`}
               tooltipLocation="bottom"
               imgComponent={
                 <MdKeyboardArrowRight size="24px" color="rgba(75, 85, 99)"/>

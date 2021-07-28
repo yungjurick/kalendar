@@ -24,8 +24,9 @@ const Timeline = ({
         return (
           <div
             key={`${h}-${seg}`}
+            style={{ height: '11px' }}
             className={`
-              relative flex w-full pl-2
+              relative flex w-full px-2 timelineSegmentSpacing
             `}
           >
             {
@@ -33,6 +34,7 @@ const Timeline = ({
                 <TimelineBlock
                   key={i}
                   index={i}
+                  baseZIndex={baseZIndex}
                   event={e}
                   calendarViewType={calendarViewType}
                 />

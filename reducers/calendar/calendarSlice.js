@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { isBefore, isWithinInterval, eachDayOfInterval, areIntervalsOverlapping, getHours, set, format, closestTo, getMinutes, getMonth, getDate, isWeekend, differenceInWeeks, isSameDay, differenceInMonths, getDay } from 'date-fns';
-import { getBaseDayViewEvents, getBaseMonthViewEvents, getBaseWeekViewEvents, getDateRange } from '../../utils/helpers';
+import { getBaseDayViewEvents, getBaseMonthViewEvents, getBaseWeekViewEvents, getClosestIndexForDayViewEvents, getDateRange } from '../../utils/helpers';
 import { CalendarViewTypes, EventRepeatTypes, RepeatChangesTypes } from '../../utils/types';
 
 const initialState = {
@@ -58,22 +58,6 @@ const getBaseEventBlock = (
     createdAt,
     ...changes
   }
-}
-
-const getClosestIndexForDayViewEvents = (date) => {
-	const ZERO = set(date, { minutes: 15 })
-	const FIFTEEN = set(date, { minutes: 15 })
-	const THIRTY = set(date, { minutes: 30 })
-	const FOURTYFIVE = set(date, { minutes: 45 })
-
-	const closest = closestTo(date, [
-		ZERO,
-		FIFTEEN,
-		THIRTY,
-		FOURTYFIVE
-	])
-
-	return [getHours(date), getMinutes(closest)];
 }
 
 const getRepeatedEventBlocks = (sourceEvent, eventGroupDetail, rangeStart, rangeEnd) => {
