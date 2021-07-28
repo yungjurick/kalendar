@@ -5,13 +5,20 @@ const TimelineHeader = ({
   wholeDayEvents = []
 }) => {
   console.log(dates)
+
   return (
     <div className="flex flex-col">
-      <div className="flex justify-start w-full pl-20">
+      <div className="flex justify-between w-full pl-14">
         {
           dates.map((date, i) => {
             return (
-              <div key={i} className="flex flex-col items-center justify-start">
+              <div
+                key={i}
+                className={`
+                  flex flex-col items-center justify-start
+                  ${dates.length > 1 && 'flex-1'}
+                `}
+              >
                 <span className="flex items-center justify-center h-8 mt-2 font-medium tracking-widest text-gray-600 text-xxs">
                   {format(new Date(date), 'EEE').toUpperCase()}
                 </span>

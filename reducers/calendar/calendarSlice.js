@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { isBefore, isWithinInterval, eachDayOfInterval, areIntervalsOverlapping, getHours, set, format, closestTo, getMinutes, getMonth, getDate, isWeekend, differenceInWeeks, isSameDay, differenceInMonths } from 'date-fns';
+import { isBefore, isWithinInterval, eachDayOfInterval, areIntervalsOverlapping, getHours, set, format, closestTo, getMinutes, getMonth, getDate, isWeekend, differenceInWeeks, isSameDay, differenceInMonths, getDay } from 'date-fns';
 import { getBaseDayViewEvents, getBaseMonthViewEvents, getBaseWeekViewEvents, getDateRange } from '../../utils/helpers';
 import { CalendarViewTypes, EventRepeatTypes, RepeatChangesTypes } from '../../utils/types';
 
@@ -15,9 +15,7 @@ const initialState = {
 const getBaseEventContainer = (calendarViewType, targetDate) => {
   switch (calendarViewType) {
     case CalendarViewTypes.DAY_VIEW: {
-      const container = getBaseDayViewEvents();
-      console.log(container);
-      return container
+      return getBaseDayViewEvents();
     }
 
     case CalendarViewTypes.WEEK_VIEW: {
@@ -198,7 +196,7 @@ const insertEventToDayViewContainer = (
   targetDate,
   eventGroupDB
 ) => {
-  console.log("Container", container);
+  console.log("Day View Container", container);
   console.log("Events", filteredEvents);
   console.log("eventGroupDB", eventGroupDB);
 
@@ -236,9 +234,56 @@ const insertEventToDayViewContainer = (
   console.log(container);
 }
 
-const insertEventToWeekViewContainer = (container, filteredEvents, eventGroupDB) => {}
+const insertEventToWeekViewContainer = (
+  container,
+  filteredEvents,
+  targetDate,
+  eventGroupDB
+) => {
+  console.log("Week View Container", container);
+  console.log("Events", filteredEvents);
+  console.log("eventGroupDB", eventGroupDB);
 
-const insertEventToMonthViewContainer = (container, filteredEvents, eventGroupDB) => {}
+  const { single, repeated, multiday } = filteredEvents
+  const [rangeStart, rangeEnd] = getDateRange(CalendarViewTypes.WEEK_VIEW, targetDate);
+
+  // Process Single Events
+  single.forEach(e => {
+    const dayIndex = getDay(new Date(e.startDate))
+    const [hour, minute] = getClosestIndexForDayViewEvents(new Date(e.startDate));
+    const eventBlock = getBaseEventBlock(e)
+    container['days'][dayIndex][hour][minute]['events'].push(eventBlock);
+  })
+  // Process Multiday Events
+  multiday.forEach(e => {
+    const dayIndex = getDay(new Date(e.startDate))
+    const eventBlock = getBaseEventBlock(e)
+    container['wholeDayEvents'][dayIndex].push(eventBlock);
+  })
+
+  // Process Repeated Events
+  repeated.forEach(e => {
+    const eventGroupDetail = eventGroupDB[e.eventGroupUid];
+    const repeatedBlocks = getRepeatedEventBlocks(
+      e,
+      eventGroupDetail,
+      rangeStart,
+      rangeEnd
+    )
+    console.log('Repeated Blocks:', repeatedBlocks)
+    repeatedBlocks.forEach(block => {
+      const dayIndex = getDay(new Date(block.startDate))
+      const [hour, minute] = getClosestIndexForDayViewEvents(new Date(block.startDate));
+      container['days'][dayIndex][hour][minute]['events'].push(block);
+    })
+  })
+}
+
+const insertEventToMonthViewContainer = (container, filteredEvents, targetDate, eventGroupDB) => {
+  console.log("Month View Container", container);
+  console.log("Events", filteredEvents);
+  console.log("eventGroupDB", eventGroupDB);
+}
 
 const filterEvents = (events, calendarViewType, targetDate) => {
   const [rangeStart, rangeEnd] = getDateRange(calendarViewType, targetDate);
@@ -323,6 +368,7 @@ export const calendarSlice = createSlice({
           insertEventToWeekViewContainer(
             baseEventContainer,
             filteredEvents,
+            targetDate,
             eventGroupDB
           )
           state.weekViewEvents = baseEventContainer
@@ -333,6 +379,7 @@ export const calendarSlice = createSlice({
           insertEventToMonthViewContainer(
             baseEventContainer,
             filteredEvents,
+            targetDate,
             eventGroupDB
           )
           state.monthViewEvents = baseEventContainer

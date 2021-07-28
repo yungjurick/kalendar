@@ -1,6 +1,7 @@
 import { eachDayOfInterval, format, getDate, setHours } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { getDateRange } from '../../../utils/helpers';
 import { CalendarViewTypes } from '../../../utils/types';
 import Timeline from './Timeline';
 import TimelineHeader from './TimelineHeader'

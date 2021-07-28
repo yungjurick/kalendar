@@ -1,5 +1,5 @@
 import { addMonths, addWeeks, eachDayOfInterval, endOfMonth, endOfWeek, format, getDate, getMonth, isSameDay, setMonth, startOfMonth, startOfWeek, subMonths } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux'
 import { setTargetDate } from '../../../reducers/calendar/calendarSettingSlice';
@@ -11,6 +11,16 @@ const PanelLeftCalendar = () => {
   const dispatch = useDispatch();
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const [ calendarDate, setCalendarDate ] = useState(Date());
+
+  useEffect(() => {
+    const diff = getMonth(new Date(targetDate)) - getMonth(new Date(calendarDate));
+    console.log(diff);
+    if (diff > 0) {
+      setCalendarDate(addMonths(new Date(calendarDate), diff));
+    } else if (diff < 0) {
+      setCalendarDate(subMonths(new Date(calendarDate), Math.abs(diff)));
+    }
+  }, [targetDate])
 
   const isEqualDate = (a, b) => {
     const dateA = new Date(a);
@@ -84,6 +94,7 @@ const PanelLeftCalendar = () => {
       }
 
       case CalendarViewTypes.WEEK_VIEW: {
+        dispatch(setTargetDate(date.toString()));
         break;
       }
 

@@ -16,8 +16,6 @@ const TimelineBlock = ({
     [ThemeColorTypes.BROWN]: 'bg-brown-1-500',
   }
 
-  console.log(event);
-
   return (
     <div className={`
       relative
@@ -33,10 +31,10 @@ const TimelineBlock = ({
       ${colorLookup[event.themeColor]}
       ${index > 0 && 'border-l border-white -ml-2'}
     `}>
-      <span className="font-extralight">
+      <span className="h-full font-extralight">
         {event.title},
       </span>
-      <span className="ml-1 font-thin">
+      <span className="h-full ml-1 overflow-hidden font-thin">
         {format(new Date(event.startDate), 'p')}
       </span>
     </div>

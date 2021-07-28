@@ -7,16 +7,17 @@ const Timeline = ({
 }) => {
   console.log(data);
 
-  const dayViewTimeline = (data) => (
-    Object.keys(data.hours).map((h, i) => {
+  const dayViewTimeline = (data) => {
+    console.log(data);
+    return Object.keys(data).map((h, i) => {
 
-      const minuteSegments = Object.keys(data['hours'][h]).map(seg => {
+      const minuteSegments = Object.keys(data[h]).map(seg => {
         const {
           events,
           startColIndex,
           colCount,
           baseZIndex
-        } = data['hours'][h][seg]
+        } = data[h][seg]
 
         // console.log(events);
 
@@ -30,7 +31,7 @@ const Timeline = ({
             {
               events.map((e, i) => (
                 <TimelineBlock
-                  key={e.eventUid}
+                  key={i}
                   index={i}
                   event={e}
                   calendarViewType={calendarViewType}
@@ -47,16 +48,37 @@ const Timeline = ({
         </div>
       )
     })
-  )
+  }
+
+  const weekViewTimeline = (data) => {
+    console.log('Week Data', data);
+    const week = Object.keys(data['days']).map((d, i) => {
+      const dayView = dayViewTimeline(data['days'][d])
+      return (
+        <div
+          key={`day-${i}`}
+          className="flex-1 w-1/7"
+        >
+          {dayView}
+        </div>
+      )
+    })
+    // 0 index is set to the end since index 0 is Sunday
+    return [
+      ...week.slice(1),
+      week[0]
+    ]
+  }
 
   return (
-    <div className="flex-auto w-full ml-2 border-l">
+    <div className={`
+      flex-auto w-full h-full ml-2 border-l
+      ${calendarViewType === CalendarViewTypes.WEEK_VIEW && 'flex divide-x' }
+    `}>
       {
         calendarViewType === CalendarViewTypes.DAY_VIEW 
-        ? dayViewTimeline(data)
-        : (
-          <div></div>
-        )
+        ? dayViewTimeline(data['hours'])
+        : weekViewTimeline(data)
       }
     </div>
   )

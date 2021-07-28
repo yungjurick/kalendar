@@ -2,10 +2,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { MdMenu, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdArrowDropDown, MdApps, MdHelpOutline } from 'react-icons/md';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '../Common/Button/IconButton';
 import { CalendarViewTypes } from '../../utils/types';
-import { format } from 'date-fns';
+import { endOfWeek, format, isSameWeek, startOfWeek } from 'date-fns';
+import { setTargetDate, setViewType } from '../../reducers/calendar/calendarSettingSlice';
+import Dropdown from '../Common/Dropdown/Dropdown';
 // import UserProfile from '../Profile/UserProfile';
 
 export const HeaderBar = () => {
@@ -13,7 +15,10 @@ export const HeaderBar = () => {
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+  const [isViewTypeDropdownOpen, setIsViewTypeDropdownOpen] = useState(false);
 
   const profilePhoto = photoUrl === ''
     ? 'https://gravatar.com/avatar/762cbbab74ca0b222c1aaed8948be973?s=400&d=identicon&r=x'
@@ -28,17 +33,68 @@ export const HeaderBar = () => {
       }
 
       case CalendarViewTypes.WEEK_VIEW: {
-        return;
+        const weekStart = startOfWeek(tempDate, { weekStartsOn: 1})
+        const weekEnd = endOfWeek(tempDate, { weekStartsOn: 1})
+        return isSameWeek(weekStart, weekEnd)
+          ? format(tempDate, 'MMMM yyyy')
+          : `${format(weekStart, 'MMM')} - ${format(weekEnd, 'MMM yyyy')}`
+        
       }
 
       case CalendarViewTypes.MONTH_VIEW: {
-        return;
+        return format(tempDate, 'MMMM yyyy')
       }
 
       case CalendarViewTypes.YEAR_VIEW: {
-        return;
+        return format(tempDate, 'yyyy')
       }
     }
+  }
+
+  const calendarViewTypeDropdownData = [
+    {
+      leftLabel: 'Day',
+      rightLabel: 'D',
+      onClickHandler: () => {
+        dispatch(setViewType(CalendarViewTypes.DAY_VIEW))
+        router.push('/calendar/day', undefined, { shallow: true })
+        setIsViewTypeDropdownOpen(false);
+      }
+    },
+    {
+      leftLabel: 'Week',
+      rightLabel: 'W',
+      onClickHandler: () => {
+        dispatch(setViewType(CalendarViewTypes.WEEK_VIEW))
+        router.push('/calendar/week', undefined, { shallow: true })
+        setIsViewTypeDropdownOpen(false);
+      }
+    },
+    {
+      leftLabel: 'Month',
+      rightLabel: 'M',
+      onClickHandler: () => {
+        dispatch(setViewType(CalendarViewTypes.MONTH_VIEW))
+        router.push('/calendar/month', undefined, { shallow: true })
+        setIsViewTypeDropdownOpen(false);
+      }
+    },
+    {
+      leftLabel: 'Year',
+      rightLabel: 'Y',
+      onClickHandler: () => {
+        dispatch(setViewType(CalendarViewTypes.YEAR_VIEW))
+        router.push('/calendar/year', undefined, { shallow: true })
+        setIsViewTypeDropdownOpen(false);
+      }
+    }
+  ]
+
+  const viewTypeStringLookUp = {
+    [CalendarViewTypes.DAY_VIEW]: 'Day',
+    [CalendarViewTypes.WEEK_VIEW]: 'Week',
+    [CalendarViewTypes.MONTH_VIEW]: 'Month',
+    [CalendarViewTypes.YEAR_VIEW]: 'Year'
   }
 
   return (
@@ -67,7 +123,10 @@ export const HeaderBar = () => {
       {/* Middle Section */}
       <div className="flex items-center flex-auto">
         <div className="flex items-center justify-start">
-          <div className="px-3 py-2 text-sm font-normal text-gray-700 transition border rounded-sm cursor-pointer hover:bg-gray-100">
+          <div
+            className="px-3 py-2 text-sm font-normal text-gray-700 transition border rounded-sm cursor-pointer hover:bg-gray-100"
+            onClick={() => dispatch(setTargetDate(Date()))}
+          >
             Today
           </div>
           <div className="flex ml-3 w-min">
@@ -108,9 +167,28 @@ export const HeaderBar = () => {
             }
             onClickHandler={() => {}}
           />
-          <div className="flex items-center justify-between py-2 pl-3 pr-0.5 tracking-wide border rounded-md text-sm text-gray-700">
-            <span className="mr-1.5">Day</span>
-            <MdArrowDropDown size="20px" color="rgba(75, 85, 99)" />
+          <div
+            className="relative flex items-center justify-between text-sm tracking-wide text-gray-700 border rounded-md cursor-pointer hover:bg-gray-100"
+          >
+            <span
+              className="mr-1.5 py-2 pl-3"
+              onClick={() => setIsViewTypeDropdownOpen(true)}
+            >
+              {viewTypeStringLookUp[calendarViewType]}
+            </span>
+            <MdArrowDropDown
+              size="20px"
+              color="rgba(75, 85, 99)"
+              className="pr-0.5"
+              onClick={() => setIsViewTypeDropdownOpen(true)}
+            />
+            {
+              isViewTypeDropdownOpen &&
+              <Dropdown
+                data={calendarViewTypeDropdownData}
+                onCloseDropdown={() => setIsViewTypeDropdownOpen(false)}
+              />
+            }
           </div>
         </div>
         <div className="flex space-x-2">

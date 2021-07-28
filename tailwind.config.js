@@ -37,6 +37,9 @@ module.exports = {
         'xxxs': '.4rem',
         'xxs': '.5rem'
       },
+      width: {
+        '1/7': '14.2857143%'
+      },
       minWidth: {
         '0': '0',
         '1/4': '25%',

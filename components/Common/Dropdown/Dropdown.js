@@ -6,8 +6,8 @@ import { useEffect, useRef } from 'react';
   data = [
     ...,
     {
-      label: String
-      iconComponent: Component
+      leftLabel: String
+      rightLabel: Component
       onClickHandler: Function
     }
   ]
@@ -52,16 +52,13 @@ const Dropdown = ({
             <div
               key={i}
               onClick={() => handleOnClick(d.onClickHandler)}
-              className="flex px-4 py-2 transition hover:bg-gray-100"
+              className="flex items-center justify-between px-4 py-2 transition hover:bg-gray-100"
             >
-              {
-                d.iconComponent !== null &&
-                <div className="mr-3">
-                  {d.iconComponent}
-                </div>
-              }
               <div className="text-sm">
-                {d.label}
+                {d.leftLabel}
+              </div>
+              <div className="text-sm text-gray-400">
+                {d.rightLabel}
               </div>
             </div>
           )

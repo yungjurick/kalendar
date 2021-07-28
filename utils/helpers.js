@@ -43,12 +43,12 @@ export const getBaseDayViewEvents = () => {
 }
 
 export const getBaseWeekViewEvents = () => {
-  const { hours } = getBaseDayViewEvents();
   const weekArray = Array(7).fill()
     .map((v, i) => i)
 
   const days = weekArray
     .reduce((acc, cur) => {
+      const { hours } = getBaseDayViewEvents();
       acc[cur] = { ...hours }
       return acc
     }, {})
@@ -58,7 +58,8 @@ export const getBaseWeekViewEvents = () => {
       acc[cur] = []
       return acc
     }, {})
-
+  
+  console.log(days);
   return {
     wholeDayEvents,
     days
