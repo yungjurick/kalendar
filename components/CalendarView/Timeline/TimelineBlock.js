@@ -41,12 +41,12 @@ const TimelineBlock = ({
       style={{ height: getBlockHeight(event)}}
       className={`
         relative
+        inline-block
         -top-px
         rounded-md
         text-xs
         text-white
-        flex
-        items-center
+        overflow-x-hidden
         flex-1
         px-2.5
         ${colorLookup[event.themeColor]}
@@ -54,12 +54,12 @@ const TimelineBlock = ({
         ${`z-${baseZIndex + index}`}
       `}
     >
-      <span className="h-full overflow-hidden font-extralight">
-        {event.title},
-      </span>
-      <span className="h-full ml-1 overflow-hidden font-thin">
-        {format(new Date(event.startDate), 'p')}
-      </span>
+      <div className="font-extralight">
+        <span className="max-w-xs min-w-0 overflow-hidden whitespace-nowrap">
+          {event.title}
+        </span>
+        {/* , {format(new Date(event.startDate), 'p')} */}
+      </div>
     </div>
   )
 }

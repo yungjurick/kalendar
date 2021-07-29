@@ -21,7 +21,7 @@ const Timeline = ({
             key={`${h}-${seg}`}
             style={{ height: '11px' }}
             className={`
-              relative flex w-full px-2 timelineSegmentSpacing
+              relative flex w-full pl-2 timelineSegmentSpacing
             `}
           >
             {
@@ -40,7 +40,7 @@ const Timeline = ({
       })
 
       return (
-        <div key={i} className="relative h-12 -ml-2 border-b height-min">
+        <div key={i} className="relative w-full h-12 border-b height-min">
           {minuteSegments}
         </div>
       )
@@ -69,7 +69,7 @@ const Timeline = ({
 
   return (
     <div className={`
-      flex-auto w-full h-full ml-2 border-l
+      flex-auto w-full h-full border-l
       ${calendarViewType === CalendarViewTypes.WEEK_VIEW && 'flex divide-x' }
     `}>
       {

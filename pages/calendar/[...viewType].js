@@ -3,12 +3,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import  { fetchEventsForCalendarType } from '../../reducers/calendar/calendarSlice'
 import AppLayout from '../../components/App/AppLayout'
-import TimelineWrapper from '../../components/Calendar/Timeline/TimelineWrapper';
+import TimelineWrapper from '../../components/CalendarView/Timeline/TimelineWrapper';
 import { useRouter } from 'next/router';
 import { CalendarViewTypes } from '../../utils/types';
 import { setViewType } from '../../reducers/calendar/calendarSettingSlice';
+import CalendarViewGrid from '../../components/CalendarView/Grid/Grid';
 
-const CalendarDayView = () => {
+const CalendarView = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
@@ -54,6 +55,18 @@ const CalendarDayView = () => {
       }
     }
   }, [query])
+
+  const selectedCalendarView = (calendarViewType) => {
+    switch(calendarViewType) {
+      case CalendarViewTypes.DAY_VIEW:
+      case CalendarViewTypes.WEEK_VIEW: {
+        return <TimelineWrapper />
+      }
+      case CalendarViewTypes.MONTH_VIEW: {
+        return <CalendarViewGrid />
+      }
+    }
+  }
   
   return (
     <>
@@ -64,15 +77,18 @@ const CalendarDayView = () => {
       </Head>
       <main>
         <AppLayout>
-          <div className="flex flex-col pr-3">
-            {
-              (
-                (calendarViewType === CalendarViewTypes.DAY_VIEW ||
-                calendarViewType === CalendarViewTypes.WEEK_VIEW)
-              )
-              &&
-              <TimelineWrapper />
+          <div className={`
+            flex
+            ${
+              (calendarViewType === CalendarViewTypes.DAY_VIEW || calendarViewType === CalendarViewTypes.WEEK_VIEW) &&
+              'flex-col pr-3'
             }
+            ${
+              (calendarViewType === CalendarViewTypes.MONTH_VIEW) &&
+              'h-full'
+            }
+          `}>
+            {selectedCalendarView(calendarViewType)}
           </div>
         </AppLayout>
       </main>
@@ -80,4 +96,4 @@ const CalendarDayView = () => {
   )
 }
 
-export default CalendarDayView
+export default CalendarView

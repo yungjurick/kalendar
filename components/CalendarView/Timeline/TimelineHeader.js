@@ -33,11 +33,14 @@ const TimelineHeader = ({
       </div>
       <div className="flex">
         <div className="flex items-end justify-start text-gray-500 text-xxs">
-          <div className="flex items-center justify-between border-r min-w-56">
-            <span>{format(new Date(), 'z')}</span>
+          <div className="flex items-end justify-between min-h-0 min-w-56">
+            <span>
+              {format(new Date(), 'z')}
+            </span>
+            <div className="relative w-2 border-b"/>
           </div>
         </div>
-        <div className="w-full pl-2 -ml-2 border-b">
+        <div className="w-full pl-2 border-b border-l">
           {/* Whole Day Events */}
         </div>
       </div>

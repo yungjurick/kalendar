@@ -168,7 +168,7 @@ export const HeaderBar = () => {
             onClickHandler={() => {}}
           />
           <div
-            className="relative flex items-center justify-between text-sm tracking-wide text-gray-700 border rounded-md cursor-pointer hover:bg-gray-100"
+            className="relative flex items-center justify-between text-sm tracking-wide text-gray-800 border rounded-md cursor-pointer hover:bg-gray-100"
           >
             <span
               className="mr-1.5 py-2 pl-3"

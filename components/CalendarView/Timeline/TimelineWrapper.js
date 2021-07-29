@@ -43,17 +43,18 @@ const TimelineWrapper = ({}) => {
       <div className="flex flex-auto overflow-y-scroll timelineHeight">
         
         {/* Left Time Divider */}
-        <div className="w-12">
+        <div className="min-w-56">
           {
             Array(24)
               .fill()
               .map((v, i) => {
                 const date = setHours(new Date(), i);
                 return (
-                  <div key={i} className="h-12 text-gray-500 text-xxs">
-                    <span className="text-right relative -top-1.5">
+                  <div key={i} className="flex items-start justify-between h-12 text-gray-500 text-xxs">
+                    <span className="relative text-right -top-2">
                       { i !== 0 ? format(date, 'H aa') : ''}
                     </span>
+                    <div className="relative w-2 h-12 border-t -top-px"/>
                   </div>
                 )
               })
