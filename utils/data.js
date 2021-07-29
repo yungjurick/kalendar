@@ -40,7 +40,35 @@ export const getInitialEvents = () => {
       invites: [],
       isAllDay: false,
       createdAt: Date(2021, 7, 26, 22, 30),
-    }
+    },
+    'event-2': {
+      eventUid: 'event-2',
+      eventCreatorUid: 'Rick-1234',
+      eventGroupUid: null,
+      startDate: Date(2021, 7, 26, 22, 30),
+      endDate: Date(2021, 7, 29, 23, 30),
+      title: 'Sample Multiday Event',
+      description: 'This is a sample multiday event',
+      themeColor: 0,
+      location: '',
+      invites: [],
+      isAllDay: false,
+      createdAt: Date(2021, 7, 26, 22, 30),
+    },
+    'event-3': {
+      eventUid: 'event-3',
+      eventCreatorUid: 'Rick-1234',
+      eventGroupUid: null,
+      startDate: Date(2021, 7, 25, 0, 0),
+      endDate: Date(2021, 7, 25, 23, 59),
+      title: 'Sample Whole Day Event',
+      description: 'This is a sample multiday event',
+      themeColor: 0,
+      location: '',
+      invites: [],
+      isAllDay: true,
+      createdAt: Date(2021, 7, 26, 22, 30),
+    },
   }
 }
 

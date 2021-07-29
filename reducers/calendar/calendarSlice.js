@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { isBefore, isWithinInterval, eachDayOfInterval, areIntervalsOverlapping, getHours, set, format, closestTo, getMinutes, getMonth, getDate, isWeekend, differenceInWeeks, isSameDay, differenceInMonths, getDay } from 'date-fns';
+import { isBefore, isWithinInterval, eachDayOfInterval, areIntervalsOverlapping, getHours, set, format, closestTo, getMinutes, getMonth, getDate, isWeekend, differenceInWeeks, isSameDay, differenceInMonths, getDay, isAfter, eachWeekOfInterval, intervalToDuration, endOfWeek, endOfDay } from 'date-fns';
 import { getBaseDayViewEvents, getBaseMonthViewEvents, getBaseWeekViewEvents, getClosestIndexForDayViewEvents, getDateRange } from '../../utils/helpers';
 import { CalendarViewTypes, EventRepeatTypes, RepeatChangesTypes } from '../../utils/types';
 
@@ -58,6 +58,100 @@ const getBaseEventBlock = (
     createdAt,
     ...changes
   }
+}
+
+const getDuration = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  return eachDayOfInterval({ start, end }).length - 1;
+}
+
+const getMultidayEventBlocksForMonth = (events, rangeStart, rangeEnd) => {
+	processedEvents = [];
+
+	events.forEach(event => {
+    const originalStartDate = new Date(event.startDate);
+    const originalEndDate = new Date(event.endDate);
+
+		// Check if start date is within bounds
+		const startDate = isBefore(startDate, rangeStart)
+			? rangeStart
+			: originalStartDate;
+		
+		// Check if end date is within bounds
+		const endDate = isAfter(endDate, rangeEnd)
+			? rangeEnd
+			: originalEndDate;
+
+		const eachWeekIntervals = eachWeekOfInterval({
+			start: startDate,
+			end: endDate
+		}, { weekStartsOn: 1})
+		
+		// If the length is 1, then the endDate resides within the same week
+		if (eachWeekIntervals.length === 1) {
+			processedEvents.push(
+        getBaseEventBlock(
+          event,
+          {},
+          startDate.toString(),
+          endDate.toString(),
+          getDuration(startDate, endDate)
+        )
+      )
+
+		// Else, loop the intervals and create event blocks
+		} else {
+			const MAX_DURATION = 6;
+			eachWeekIntervals.forEach((interval, index) => {
+				
+				// Last index
+				if (index === interval.length - 1) {
+          processedEvents.push(
+            getBaseEventBlock(
+              event,
+              {},
+              interval.toString(),
+              endDate.toString(),
+              getDuration(interval, endDate)
+            )
+          )
+	
+				// First index starts with event start date
+				} else if (index === 0) {
+          const endOfTargetWeek = endOfDay(endOfWeek(startDate, { weekStartsOn: 1 }));
+
+          processedEvents.push(
+            getBaseEventBlock(
+              event,
+              {},
+              startDate.toString(),
+              endOfTargetWeek.toString(),
+              getDuration(startDate, endOfTargetWeek)
+            )
+          )
+	
+				// Other indexes (excluding the last)
+				} else {
+          const endOfTargetWeek = endOfDay(endOfWeek(interval, { weekStartsOn: 1 }));
+
+          processedEvents.push(
+            getBaseEventBlock(
+              event,
+              {},
+              interval.toString(),
+              endOfTargetWeek.toString(),
+              MAX_DURATION
+            )
+          )
+				}
+			})
+    }
+	})
+	
+	// Returns an array of EventBlocks that will be inserted into the monthViewContainer
+	return processedEvents
 }
 
 const getRepeatedEventBlocks = (sourceEvent, eventGroupDetail, rangeStart, rangeEnd) => {
@@ -241,7 +335,14 @@ const insertEventToWeekViewContainer = (
   // Process Multiday Events
   multiday.forEach(e => {
     const dayIndex = getDay(new Date(e.startDate))
-    const eventBlock = getBaseEventBlock(e)
+    const duration = getDuration(e.startDate, e.endDate);
+    const eventBlock = getBaseEventBlock(
+      e,
+      {},
+      null,
+      null,
+      duration
+    )
     container['wholeDayEvents'][dayIndex].push(eventBlock);
   })
 
@@ -267,6 +368,50 @@ const insertEventToMonthViewContainer = (container, filteredEvents, targetDate, 
   console.log("Month View Container", container);
   console.log("Events", filteredEvents);
   console.log("eventGroupDB", eventGroupDB);
+
+  const { single, repeated, multiday } = filteredEvents
+  const [rangeStart, rangeEnd] = getDateRange(CalendarViewTypes.MONTH_VIEW, targetDate);
+
+  // Process Single Events
+  single.forEach(e => {
+    const startDate = new Date(e.startDate);
+    const monthIndex = getMonth(startDate)
+    const dateIndex = getDate(startDate)
+
+    const eventBlock = getBaseEventBlock(e)
+    container[monthIndex][dateIndex].push(eventBlock);
+  })
+  // Process Multiday Events
+  multiday.forEach(e => {
+    const multidayEventBlocks = getMultidayEventBlocksForMonth(e, rangeStart, rangeEnd)
+
+    multidayEventBlocks.forEach(eb => {
+      const startDate = new Date(eb.startDate);
+      const monthIndex = getMonth(startDate)
+      const dateIndex = getDate(startDate)
+
+      container[monthIndex][dateIndex].push(eventBlock);
+    })
+  })
+
+  // Process Repeated Events
+  repeated.forEach(e => {
+    const eventGroupDetail = eventGroupDB[e.eventGroupUid];
+    const repeatedBlocks = getRepeatedEventBlocks(
+      e,
+      eventGroupDetail,
+      rangeStart,
+      rangeEnd
+    )
+    console.log('Repeated Blocks:', repeatedBlocks)
+    repeatedBlocks.forEach(block => {
+      const startDate = new Date(block.startDate);
+      const monthIndex = getMonth(startDate)
+      const dateIndex = getDate(startDate)
+
+      container[monthIndex][dateIndex].push(block);
+    })
+  })
 }
 
 const filterEvents = (events, calendarViewType, targetDate) => {

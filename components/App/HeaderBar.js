@@ -5,7 +5,7 @@ import { MdMenu, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdArrowDropDown, MdA
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '../Common/Button/IconButton';
 import { CalendarViewTypes } from '../../utils/types';
-import { endOfWeek, format, isSameWeek, startOfWeek } from 'date-fns';
+import { addDays, addMonths, addWeeks, addYears, endOfWeek, format, isSameWeek, startOfWeek, subDays, subMonths, subWeeks, subYears } from 'date-fns';
 import { setTargetDate, setViewType } from '../../reducers/calendar/calendarSettingSlice';
 import Dropdown from '../Common/Dropdown/Dropdown';
 // import UserProfile from '../Profile/UserProfile';
@@ -49,6 +49,54 @@ export const HeaderBar = () => {
         return format(tempDate, 'yyyy')
       }
     }
+  }
+
+  const togglePrevious = (type, curTargetDate) => {
+    let updatedTargetDate;
+
+    switch (type) {
+      case CalendarViewTypes.DAY_VIEW: 
+        updatedTargetDate = subDays(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.WEEK_VIEW:
+        updatedTargetDate = subWeeks(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.MONTH_VIEW:
+        updatedTargetDate = subMonths(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.YEAR_VIEW:
+        updatedTargetDate = subYears(new Date(curTargetDate), 1)
+        break;
+    }
+
+    dispatch(setTargetDate(updatedTargetDate.toString()))
+  }
+
+  const toggleNext = (type, curTargetDate) => {
+    let updatedTargetDate;
+
+    switch (type) {
+      case CalendarViewTypes.DAY_VIEW: 
+        updatedTargetDate = addDays(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.WEEK_VIEW:
+        updatedTargetDate = addWeeks(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.MONTH_VIEW:
+        updatedTargetDate = addMonths(new Date(curTargetDate), 1)
+        break;
+
+      case CalendarViewTypes.YEAR_VIEW:
+        updatedTargetDate = addYears(new Date(curTargetDate), 1)
+        break;
+    }
+
+    dispatch(setTargetDate(updatedTargetDate.toString()))
   }
 
   const calendarViewTypeDropdownData = [
@@ -137,7 +185,7 @@ export const HeaderBar = () => {
               imgComponent={
                 <MdKeyboardArrowLeft size="24px" color="rgba(75, 85, 99)"/>
               }
-              onClickHandler={() => {}}
+              onClickHandler={() => togglePrevious(calendarViewType, targetDate)}
             />
             <IconButton
               size="small"
@@ -146,7 +194,7 @@ export const HeaderBar = () => {
               imgComponent={
                 <MdKeyboardArrowRight size="24px" color="rgba(75, 85, 99)"/>
               }
-              onClickHandler={() => {}}
+              onClickHandler={() => toggleNext(calendarViewType, targetDate)}
             />
           </div>
           <div className="ml-5 text-xl text-gray-600">

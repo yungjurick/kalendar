@@ -1,23 +1,11 @@
 import { differenceInMinutes, format, set } from 'date-fns';
-import { getClosestIndexForDayViewEvents } from '../../../utils/helpers';
-import { ThemeColorTypes } from '../../../utils/types'
+import { colorLookup, getClosestIndexForDayViewEvents } from '../../../utils/helpers';
 
 const TimelineBlock = ({
   index,
   baseZIndex,
   event,
-  calendarViewType
 }) => {
-  const colorLookup = {
-    [ThemeColorTypes.RED]: 'bg-red-500',
-    [ThemeColorTypes.GREEN]: 'bg-green-500',
-    [ThemeColorTypes.GOLD]: 'bg-gold-3-500',
-    [ThemeColorTypes.BLUE]: 'bg-blue-500',
-    [ThemeColorTypes.CYAN]: 'bg-cyan-7-500',
-    [ThemeColorTypes.PURPLE]: 'bg-purple-500',
-    [ThemeColorTypes.BROWN]: 'bg-brown-1-500',
-  }
-
   const getBlockHeight = (event) => {
     const basePixel = 11
     const [startHour, startMinuteSeg] = getClosestIndexForDayViewEvents(new Date(event.startDate))

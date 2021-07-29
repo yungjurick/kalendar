@@ -21,7 +21,7 @@ const Timeline = ({
             key={`${h}-${seg}`}
             style={{ height: '11px' }}
             className={`
-              relative flex w-full pl-2 timelineSegmentSpacing
+              relative flex w-full pr-2 timelineSegmentSpacing
             `}
           >
             {
@@ -31,7 +31,6 @@ const Timeline = ({
                   index={i}
                   baseZIndex={baseZIndex}
                   event={e}
-                  calendarViewType={calendarViewType}
                 />
               ))
             }

@@ -1,5 +1,15 @@
 import { addDays, closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
-import { CalendarViewTypes } from './types'
+import { CalendarViewTypes, ThemeColorTypes } from './types'
+
+export const colorLookup = {
+  [ThemeColorTypes.RED]: 'bg-red-500',
+  [ThemeColorTypes.GREEN]: 'bg-green-500',
+  [ThemeColorTypes.GOLD]: 'bg-gold-3-500',
+  [ThemeColorTypes.BLUE]: 'bg-blue-500',
+  [ThemeColorTypes.CYAN]: 'bg-cyan-7-500',
+  [ThemeColorTypes.PURPLE]: 'bg-purple-500',
+  [ThemeColorTypes.BROWN]: 'bg-brown-1-500',
+}
 
 export const getBaseDayViewEvents = () => {
   const hours = Array(24).fill()

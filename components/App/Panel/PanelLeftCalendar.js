@@ -102,25 +102,7 @@ const PanelLeftCalendar = () => {
   }
 
   const onClickDate = (date) => {
-    switch (calendarViewType) {
-      case CalendarViewTypes.DAY_VIEW: {
-        dispatch(setTargetDate(date.toString()));
-        break;
-      }
-
-      case CalendarViewTypes.WEEK_VIEW: {
-        dispatch(setTargetDate(date.toString()));
-        break;
-      }
-
-      case CalendarViewTypes.MONTH_VIEW: {
-        break;
-      }
-
-      case CalendarViewTypes.YEAR_VIEW: {
-        break;
-      }
-    }
+    dispatch(setTargetDate(date.toString()));
   }
 
   return (
