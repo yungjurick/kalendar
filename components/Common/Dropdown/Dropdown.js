@@ -44,7 +44,7 @@ const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute left-0 z-20 py-2 bg-white rounded-md shadow-lg drop-shadow min-w-168 top-full"
+      className="absolute left-0 z-20 py-2 bg-white rounded-md dropdownBoxShadow min-w-168 top-full"
     >
       {
         data.map((d, i) => {
@@ -52,7 +52,7 @@ const Dropdown = ({
             <div
               key={i}
               onClick={() => handleOnClick(d.onClickHandler)}
-              className="flex items-center justify-between px-4 py-2 transition hover:bg-gray-100"
+              className="flex items-center justify-between px-4 py-2 transition cursor-pointer hover:bg-gray-100"
             >
               <div className="text-sm">
                 {d.leftLabel}

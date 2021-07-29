@@ -6,18 +6,16 @@ const CalendarViewGridItemSingleEvent = ({ data }) => {
 
   return (
     <div className={`
-      flex items-center min-w-0 px-2 h-5 text-xs transition rounded-sm cursor-pointer hover:bg-gray-100
+      relative flex items-center px-2 h-5 overflow-hidden text-xs transition rounded-sm cursor-pointer hover:bg-gray-100
       ${isBefore(new Date(data.startDate), today) && 'opacity-50'}
     `}>
       <div className={`
         w-2 h-2 rounded-full mr-2
         ${colorLookup[data.themeColor]}
       `} />
-      <div className="mr-2 text-gray-600">
-        {format(new Date(data.startDate), 'p')}
-      </div>
-      <div className="truncate">
-        {data.title}
+      <div className="absolute min-w-0 pr-2 text-gray-600 truncate left-6">
+        <span>{format(new Date(data.startDate), 'p')}</span>
+        <span className="ml-1.5">{data.title}</span>
       </div>
     </div>
   )

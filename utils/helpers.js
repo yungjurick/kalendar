@@ -1,5 +1,5 @@
 import { addDays, closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
-import { CalendarViewTypes, ThemeColorTypes } from './types'
+import { CalendarViewTypes, EventRepeatTypes, ThemeColorTypes } from './types'
 
 export const colorLookup = {
   [ThemeColorTypes.RED]: 'bg-red-500',
@@ -9,6 +9,39 @@ export const colorLookup = {
   [ThemeColorTypes.CYAN]: 'bg-cyan-7-500',
   [ThemeColorTypes.PURPLE]: 'bg-purple-500',
   [ThemeColorTypes.BROWN]: 'bg-brown-1-500',
+}
+
+export const repeatTypeStringLookup = {
+  [-1]: 'Does not repeat',
+  [EventRepeatTypes.DAILY]: 'Daily',
+  [EventRepeatTypes.WEEKLY]: 'Weekly',
+  [EventRepeatTypes.BI_WEEKLY]: 'Bi-weekly',
+  [EventRepeatTypes.MONTHLY]: 'Monthly',
+  [EventRepeatTypes.WEEK_DAYS]: 'Week days',
+}
+
+export const isValidTime = (strValue) => {
+  const trimmed = strValue.trim()
+  const split = trimmed.split(':')
+
+  if (split.length !== 2) {
+    return [false, 0, 0]
+  }
+
+  const hour = Number(split[0])
+  const minutes = Number(split[1])
+
+  if (isNaN(hour) || isNaN(minutes)) {
+    return [false, 0, 0]
+  }
+
+  if (hour < 0 || hour > 23) {
+    return [false, 0, 0]
+  } else if (minutes < 0 || minutes > 59) {
+    return [false, 0, 0]
+  }
+
+  return [true, hour, minutes]
 }
 
 export const getBaseDayViewEvents = () => {

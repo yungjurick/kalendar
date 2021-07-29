@@ -62,14 +62,22 @@ const TimelineWrapper = ({}) => {
         </div>
 
         {/* Timeline */}
-        <Timeline
-          calendarViewType={calendarViewType}
-          data={
-            calendarViewType === CalendarViewTypes.DAY_VIEW
-              ? dayViewEvents
-              : weekViewEvents
-          }
-        />
+        {
+          calendarViewType === CalendarViewTypes.DAY_VIEW &&
+          Object.keys(dayViewEvents).length > 0 &&
+          <Timeline
+            calendarViewType={calendarViewType}
+            data={dayViewEvents}
+          />  
+        }
+        {
+          calendarViewType === CalendarViewTypes.WEEK_VIEW &&
+          Object.keys(weekViewEvents).length > 0 &&
+          <Timeline
+            calendarViewType={calendarViewType}
+            data={weekViewEvents}
+          />  
+        }
       </div>
     </div>
   )

@@ -4,12 +4,15 @@ import { getBaseDayViewEvents, getBaseMonthViewEvents, getBaseWeekViewEvents, ge
 import { CalendarViewTypes, EventRepeatTypes, RepeatChangesTypes } from '../../utils/types';
 
 const initialState = {
-  //temp
-  filteredEvents: {},
-
   dayViewEvents: {},
   weekViewEvents: {},
-  monthViewEvents: {}
+  monthViewEvents: {},
+
+  isCreateEventModalOpen: false,
+  createEventBasis: {
+    startDate: Date(),
+    endDate: Date()
+  }
 }
 
 const getBaseEventContainer = (calendarViewType, targetDate) => {
@@ -517,12 +520,20 @@ export const calendarSlice = createSlice({
       }
 
       console.log("Updated Container", baseEventContainer);
+    },
+    setCreateEventBasis: (state, action) => {
+      state.createEventBasis = action.payload
+    },
+    setIsCreateEventModalOpen: (state, action) => {
+      state.isCreateEventModalOpen = action.payload
     }
   }
 })
 
 export const {
   fetchEventsForCalendarType,
+  setCreateEventBasis,
+  setIsCreateEventModalOpen
 } = calendarSlice.actions
 
 export default calendarSlice.reducer

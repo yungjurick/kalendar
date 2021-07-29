@@ -54,10 +54,12 @@ module.exports = {
         '56': '56px',
         '100': '100px',
         '168': '168px',
-        '248': '248px'
+        '248': '248px',
+        '448': '448px',
        },
        height: {
-        '11px': '11px'
+        '11px': '11px',
+        '580px': '580px'
        },
        minHeight: {
         'list': 'calc(100vh - 117px)',

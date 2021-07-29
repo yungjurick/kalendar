@@ -37,7 +37,7 @@ const CalendarViewGridItem = ({
       </div>
       <div
         ref={gridEventContainerRef}
-        className="flex-auto mr-2"
+        className="relative flex-auto mr-2"
       >
         {
           events.map(e => {
