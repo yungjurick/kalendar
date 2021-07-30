@@ -69,7 +69,7 @@ const Timeline = ({
   return (
     <div className={`
       flex-auto w-full h-full border-l
-      ${calendarViewType === CalendarViewTypes.WEEK_VIEW && 'flex divide-x' }
+      ${(calendarViewType === CalendarViewTypes.WEEK_VIEW) ? 'flex divide-x' : '' }
     `}>
       {
         calendarViewType === CalendarViewTypes.DAY_VIEW 

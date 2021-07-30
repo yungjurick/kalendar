@@ -25,7 +25,7 @@ const CalendarViewGridItem = ({
           </p>
         }
         <div className={`
-          my-1.5 py-0.5 px-1 tracking-wide flex items-center justify-center
+          my-1.5 py-0.5 px-1 flex items-center justify-center
           ${
             isSameDay(today, set(new Date(), { month, date }))
             ? 'rounded-full bg-blue-500 text-white font-normal'
@@ -40,7 +40,7 @@ const CalendarViewGridItem = ({
         className="relative flex-auto mr-2"
       >
         {
-          events.map(e => {
+          events.map((e, i) => {
             if (e.duration > -1) {
               <CalendarViewGridItemMultiEvent
                 key={i}

@@ -44,6 +44,26 @@ export const isValidTime = (strValue) => {
   return [true, hour, minutes]
 }
 
+export const sortEventBlocks = (events, key, isAscending = true) => {
+  const compFunc = (a, b, isAscending) => {
+    if (isAscending) {
+      return a - b
+    } else {
+      return b - a
+    }
+  }
+
+  return events
+    .slice()
+    .sort((a, b) => {
+      if (key === 'startDate' || key === 'endDate' || key === 'createdAt') {
+        return compFunc(new Date(a[key]), new Date(b[key]), isAscending)
+      } else {
+        return compFunc(a[key], b[key], isAscending)
+      }
+    })
+}
+
 export const getBaseDayViewEvents = () => {
   const hours = Array(24).fill()
     .map((v, i) => i)
@@ -78,8 +98,6 @@ export const getBaseDayViewEvents = () => {
       return acc
     }, {})
 
-  console.log(hours);
-
   return {
     wholeDayEvents: [],
     hours
@@ -99,7 +117,10 @@ export const getBaseWeekViewEvents = () => {
   
   const wholeDayEvents = weekArray
     .reduce((acc, cur) => {
-      acc[cur] = []
+      acc[cur] = {
+        incomingRowsCount: 0,
+        events: []
+      }
       return acc
     }, {})
   
@@ -108,6 +129,29 @@ export const getBaseWeekViewEvents = () => {
     wholeDayEvents,
     days
   }
+}
+
+export const calculateIncomingRowCount = (wholeDayEvents) => {
+  let incomingRows = []
+
+  Object.keys(wholeDayEvents).forEach(key => {
+    // Remove finished rows
+    incomingRows = incomingRows.filter(v => v !== 0)
+
+    // Set current size of arr as incoming rows count
+    wholeDayEvents[key]['incomingRowsCount'] = incomingRows.length
+
+    // Decrement all duration by 1
+    incomingRows = incomingRows.map(v => v - 1)
+
+    // Loop through events:
+    // if the duration > 0, insert multiday event duration to incoming rows
+    wholeDayEvents[key]['events'].forEach(e => {
+      if (e.duration > 0) {
+        incomingRows.push(e.duration)
+      }
+    })
+  })
 }
 
 const getMonthOuterRangeContainer = (start, end) => {

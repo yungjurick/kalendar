@@ -1,5 +1,5 @@
 import { eachDayOfInterval, format, getDate, setHours } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDateRange } from '../../../utils/helpers';
 import { CalendarViewTypes } from '../../../utils/types';
@@ -7,9 +7,13 @@ import Timeline from './Timeline';
 import TimelineHeader from './TimelineHeader'
 
 const TimelineWrapper = ({}) => {
+  const timelineHeaderRef = useRef(null)
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const { dayViewEvents, weekViewEvents } = useSelector(state => state.calendar);
   const [targetDateRange, setTargetDateRange] = useState([]);
+
+  const [headerHeight, setHeaderHeight] = useState(15)
+  const [timelineMaxHeight, setTimelineMaxHeight] = useState('calc(100vh - (65px + 43px)')
 
   useEffect(() => {
     const getDayList = (targetDate, calendarViewType) => {
@@ -35,12 +39,33 @@ const TimelineWrapper = ({}) => {
     }
   }, [targetDate, calendarViewType])
 
+  useEffect(() => {
+    const height = timelineHeaderRef.current.getBoundingClientRect().height
+    setTimelineMaxHeight(
+      `calc(100vh - (65px + ${height}px))`
+    )
+  }, [targetDate, dayViewEvents, weekViewEvents])
+
   return (
     <div className="flex flex-col w-full">
       {/* Timeline Header */}
-      <TimelineHeader dates={targetDateRange} />
+      <TimelineHeader
+        ref={timelineHeaderRef}
+        dates={targetDateRange}
+        wholeDayEvents={
+          calendarViewType === CalendarViewTypes.DAY_VIEW 
+          ? { 0: dayViewEvents.wholeDayEvents }
+          : weekViewEvents.wholeDayEvents
+        }
+        calendarViewType={calendarViewType}
+      />
       
-      <div className="flex flex-auto overflow-y-scroll timelineHeight">
+      <div
+        style={{
+          maxHeight: timelineMaxHeight
+        }}
+        className="flex flex-auto overflow-y-scroll"
+      >
         
         {/* Left Time Divider */}
         <div className="min-w-56">
@@ -52,7 +77,7 @@ const TimelineWrapper = ({}) => {
                 return (
                   <div key={i} className="flex items-start justify-between h-12 text-gray-500 text-xxs">
                     <span className="relative text-right -top-2">
-                      { i !== 0 ? format(date, 'H aa') : ''}
+                      { i !== 0 ? format(date, 'h aa') : ''}
                     </span>
                     <div className="relative w-2 h-12 border-t -top-px"/>
                   </div>

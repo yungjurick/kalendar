@@ -12,6 +12,7 @@ import CalendarViewGrid from '../../components/CalendarView/Grid/Grid';
 const CalendarView = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const { query } = router;
 
@@ -77,17 +78,21 @@ const CalendarView = () => {
       </Head>
       <main>
         <AppLayout>
-          <div className={`
-            flex
-            ${
-              (calendarViewType === CalendarViewTypes.DAY_VIEW || calendarViewType === CalendarViewTypes.WEEK_VIEW) &&
-              'flex-col pr-3'
-            }
-            ${
-              (calendarViewType === CalendarViewTypes.MONTH_VIEW) &&
-              'h-full'
-            }
-          `}>
+          <div
+            className={`
+              flex
+              ${
+                (calendarViewType === CalendarViewTypes.DAY_VIEW || calendarViewType === CalendarViewTypes.WEEK_VIEW)
+                ? 'flex-col pr-3'
+                : ''
+              }
+              ${
+                (calendarViewType === CalendarViewTypes.MONTH_VIEW)
+                ? 'h-full'
+                : ''
+              }
+            `}
+          >
             {selectedCalendarView(calendarViewType)}
           </div>
         </AppLayout>

@@ -24,10 +24,6 @@ a {
   display: none;
 }
 
-.timelineHeight {
-  max-height: calc(100vh - (65px + 72px + 15px))
-}
-
 .timelineSegmentSpacing + .timelineSegmentSpacing {
   margin-top: 1px;
 }
