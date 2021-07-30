@@ -1,4 +1,5 @@
 import { addDays, closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
+import { uuid } from 'uuidv4'
 import { CalendarViewTypes, EventRepeatTypes, ThemeColorTypes } from './types'
 
 export const colorLookup = {

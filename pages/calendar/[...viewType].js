@@ -46,7 +46,14 @@ const CalendarView = () => {
     } else {
       router.push('/calendar/day', undefined, { shallow: true })
     }
-  }, [targetDate, calendarViewType])
+  }, [
+    targetDate,
+    calendarViewType,
+    userEventDB,
+    eventDB,
+    invitedDB,
+    eventGroupDB
+  ])
 
   useEffect(() => {
     const viewType = query.viewType || []

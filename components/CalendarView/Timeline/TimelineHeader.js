@@ -57,7 +57,8 @@ const TimelineHeader = ({
           incomingRowsCount,
           events: sortEventBlocks(
             eventsArr,
-            'duration'
+            'duration',
+            false
           )
         }
       } else {
@@ -65,7 +66,8 @@ const TimelineHeader = ({
           incomingRowsCount,
           events: sortEventBlocks(
             eventsArr,
-            'duration'
+            'duration',
+            false
           )
         })
       }
@@ -86,7 +88,7 @@ const TimelineHeader = ({
             <div
               key={i}
               style={{
-                height: 22
+                height: 24
               }}
               className="relative"
             />
@@ -100,7 +102,7 @@ const TimelineHeader = ({
                 height: 22,
                 width: `calc(100% + (100% * ${event.duration}) - 0.5rem)`
               }}
-              className="relative"
+              className={`relative ${i > 0 ? 'mt-0.5' : ''}`}
             >
               <div
                 className="absolute min-w-full"

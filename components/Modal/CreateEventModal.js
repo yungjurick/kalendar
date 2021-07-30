@@ -2,9 +2,11 @@ import { endOfDay, format, getDate, getHours, getMinutes, getMonth, getYear, isA
 import { useEffect, useRef, useState } from 'react'
 import { MdAccessTime, MdArrowDropDown, MdCheckBox, MdCheckBoxOutlineBlank, MdClose, MdColorLens, MdDragHandle, MdLocationOn, MdPeople, MdSubject, MdToday } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
+import { uuid } from 'uuidv4'
 import { setTargetDate } from '../../reducers/calendar/calendarSettingSlice'
 import { setIsCreateEventModalOpen } from '../../reducers/calendar/calendarSlice'
-import { colorLookup, isValidTime, repeatTypeStringLookup } from '../../utils/helpers'
+import { addNewEventToDB } from '../../reducers/dbSlice'
+import { colorLookup, getBaseEvent, isValidTime, repeatTypeStringLookup } from '../../utils/helpers'
 import { EventRepeatTypes, ThemeColorTypes } from '../../utils/types'
 import IconButton from '../Common/Button/IconButton'
 import Calendar from '../Common/Calendar/Calendar'
@@ -20,6 +22,7 @@ const CreateEventModal = () => {
   const dispatch = useDispatch()
 
   const currentUser = useSelector(state => state.user)
+  const { createEventBasis } = useSelector(state => state.calendar)
 
   const [title, setTitle] = useState('')
   const [location, setLocation] = useState('')
@@ -184,12 +187,47 @@ const CreateEventModal = () => {
     }
   }
 
-  // const { createEventBasis } = useSelector(state => state.calendar)
+  const onSaveEvent = () => {
+    let eventGroupUid = null
+    let eventGroupDetail = null
 
-  // useEffect(() => {
-  //   setStartDate(createEventBasis.startDate)
-  //   setEndDate(createEventBasis.endDate)
-  // }, [createEventBasis])
+    if (repeatType > -1) {
+      eventGroupUid = uuid()
+      eventGroupDetail = {
+        groupUid: eventGroupUid,
+        repeatType,
+        repeatChanges: {}
+      }
+    }
+
+    const newEvent = {
+      title: title.length > 0 ? title : '(No Title)',
+      description,
+      eventCreatorUid: currentUser.userUid,
+      eventGroupUid,
+      startDate,
+      endDate,
+      themeColor,
+      location,
+      invites: [],
+      isAllDay,
+      eventUid: uuid(),
+      createdAt: Date()
+    }
+
+    dispatch(setIsCreateEventModalOpen(false))
+
+    dispatch(addNewEventToDB({
+      userUid: currentUser.userUid,
+      event: newEvent,
+      eventGroup: eventGroupDetail
+    }))
+  }
+
+  useEffect(() => {
+    setStartDate(createEventBasis.startDate.toString())
+    setEndDate(createEventBasis.endDate.toString())
+  }, [])
 
   useEffect(() => {
     const onMouseMove = (e) => {
@@ -542,6 +580,7 @@ const CreateEventModal = () => {
       <div className="flex items-center justify-end px-4 py-3">
         <button
           className={`px-6 py-2 text-sm text-white bg-opacity-80 transition ${colorLookup[themeColor]} rounded-md`}
+          onClick={() => onSaveEvent()}
         >
           Save
         </button>
