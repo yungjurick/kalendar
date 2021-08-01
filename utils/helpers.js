@@ -60,7 +60,11 @@ export const sortEventBlocks = (events, key, isAscending = true) => {
       if (key === 'startDate' || key === 'endDate' || key === 'createdAt') {
         return compFunc(new Date(a[key]), new Date(b[key]), isAscending)
       } else {
-        return compFunc(a[key], b[key], isAscending)
+        if (a[key] === b[key]) {
+          return compFunc(new Date(a['startDate' ]), new Date(b['startDate' ]), isAscending)
+        } else {
+          return compFunc(a[key], b[key], isAscending)
+        }
       }
     })
 }
@@ -119,7 +123,7 @@ export const getBaseWeekViewEvents = () => {
   const wholeDayEvents = weekArray
     .reduce((acc, cur) => {
       acc[cur] = {
-        incomingRowsCount: 0,
+        incomingRowsMatrix: {},
         events: []
       }
       return acc
@@ -132,33 +136,112 @@ export const getBaseWeekViewEvents = () => {
   }
 }
 
-export const calculateIncomingRowCount = (wholeDayEvents) => {
-  let incomingRows = []
+export const getUpdatedEventBlocksWithPlacement = (events, incomingRowsMatrix) => {
+  const list = []
+  let eventIndex = 0
+  let matrixIndex = 0
 
-  Object.keys(wholeDayEvents).forEach(key => {
-    // Remove finished rows
-    incomingRows = incomingRows.filter(v => v !== 0)
+  while (eventIndex < events.length) {
+    if (matrixIndex in incomingRowsMatrix) {
+      list.push({
+        isEmpty: true
+      })
+    } else {
+      list.push({
+        ...events[eventIndex],
+        isEmpty: false
+      })
+      eventIndex++
+    }
+
+    matrixIndex++
+  }
+  
+  return list
+}
+
+export const calculateIncomingRowMatrix = (eventsByDay, isWeek = false) => {
+  const container = {...eventsByDay}
+
+  let baseIncomingRowsMatrix = {}
+  let count = 0
+  let rowIndex = 0
+
+  let keys = Object.keys(container)
+
+  if (isWeek) {
+    const updated = keys.slice()
+    const temp = updated.shift()
+    updated.push(temp)
+
+    keys = updated
+  }
+
+  keys.forEach(day => {
+    // Reset incoming rows in every eigth iteration
+    if (count == 7) {
+      count = 0
+      baseIncomingRowsMatrix = {}
+    }
+
+    // Sort the array by duration
+    container[day] = {
+      ...container[day],
+      events: sortEventBlocks(container[day]['events'], 'duration', false)
+    }
+
+    const deletedKeys = []
+
+    Object.keys(baseIncomingRowsMatrix)
+      .forEach(v => {
+        if (baseIncomingRowsMatrix[v] === 0) {
+          deletedKeys.push(Number(v))
+          delete baseIncomingRowsMatrix[v]
+        }
+      })
+    
+    if (deletedKeys.length > 0) {
+      rowIndex = Math.min(...deletedKeys)
+    }
 
     // Set current size of arr as incoming rows count
-    wholeDayEvents[key]['incomingRowsCount'] = incomingRows.length
+    container[day] = {
+      ...container[day],
+      incomingRowsMatrix: { ...baseIncomingRowsMatrix }
+    }
 
     // Decrement all duration by 1
-    incomingRows = incomingRows.map(v => v - 1)
+    Object.keys(baseIncomingRowsMatrix)
+      .forEach(v => baseIncomingRowsMatrix[v] -= 1)
+
 
     // Loop through events:
     // if the duration > 0, insert multiday event duration to incoming rows
-    wholeDayEvents[key]['events'].forEach(e => {
+
+    container[day]['events'].forEach(e => {
       if (e.duration > 0) {
-        incomingRows.push(e.duration)
+        baseIncomingRowsMatrix[rowIndex] = e.duration
+        rowIndex += 1
+
+        while (rowIndex in baseIncomingRowsMatrix) {
+          rowIndex += 1
+        }
       }
     })
+
+    // count++
   })
+
+  return container
 }
 
 const getMonthOuterRangeContainer = (start, end) => {
 	const container = {}
 	for (let i = getDate(start); i < getDate(end) + 1; i++) {
-		container[i] = [];
+		container[i] = {
+      incomingRowsMatrix: {},
+      events: []
+    };
 	}
 
 	return container;
@@ -204,7 +287,10 @@ export const getBaseMonthViewEvents = (targetDate) => {
 
   const inner = dateArray
     .reduce((acc, cur) => {
-      acc[cur] = []
+      acc[cur] = {
+        incomingRowsMatrix: {},
+        events: []
+      }
       return acc
     }, {})
 

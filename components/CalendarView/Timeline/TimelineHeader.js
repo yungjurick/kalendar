@@ -1,12 +1,12 @@
 import { format } from 'date-fns'
 import React from 'react'
-import { sortEventBlocks } from '../../../utils/helpers'
+import { getUpdatedEventBlocksWithPlacement, sortEventBlocks } from '../../../utils/helpers'
 import { CalendarViewTypes } from '../../../utils/types'
 import TimelineBlock from './TimelineBlock'
 
 const TimelineHeader = ({
   dates = [],
-  wholeDayEvents = {},
+  wholeDayEvents = {0: []},
   calendarViewType
 }, ref) => {
   console.log(wholeDayEvents, calendarViewType)
@@ -34,88 +34,93 @@ const TimelineHeader = ({
   const dayViewMultidayEvents = (wholeDayEvents) => {
     const sortedEvents = sortEventBlocks(wholeDayEvents[0], 'startDate')
     
-    return sortedEvents.map((event, i) => (
-      <TimelineBlock
-        key={i}
-        index={i}
-        baseZIndex={1}
-        event={event}
-        isMultiday={true}
-      />
-    ))
+    return (
+      sortedEvents.map((event, i) => (
+        <div key={i} className={`${i > 0 ? 'mt-0.5' : ''}`}>
+          <TimelineBlock
+            index={i}
+            baseZIndex={1}
+            event={event}
+            isMultiday={true}
+          />
+        </div>
+      ))
+    )
   }
 
   const weekViewMultidayEvents = (wholeDayEvents) => {
     const sortedEventsByDay = []
-    let sundayEvent;
+    
+    if (Object.keys(wholeDayEvents).length > 0) {
+      let sundayEvent;
 
-    Object.keys(wholeDayEvents).forEach(key => {
-      const { events: eventsArr, incomingRowsCount } = wholeDayEvents[key]
-
-      if (Number(key) === 0) {
-        sundayEvent = {
-          incomingRowsCount,
-          events: sortEventBlocks(
+      Object.keys(wholeDayEvents).forEach(key => {
+        const { events: eventsArr, incomingRowsMatrix } = wholeDayEvents[key]
+        
+        if (Number(key) === 0) {
+          sundayEvent = getUpdatedEventBlocksWithPlacement(
             eventsArr,
-            'duration',
-            false
+            incomingRowsMatrix
+          )
+        } else {
+          sortedEventsByDay.push(
+            getUpdatedEventBlocksWithPlacement(
+              eventsArr,
+              incomingRowsMatrix
+            )
           )
         }
-      } else {
-        sortedEventsByDay.push({
-          incomingRowsCount,
-          events: sortEventBlocks(
-            eventsArr,
-            'duration',
-            false
-          )
-        })
-      }
-    })
+      })
 
-    sortedEventsByDay.push(sundayEvent)
+      sortedEventsByDay.push(sundayEvent)
+    }
+
+    console.log(wholeDayEvents, sortedEventsByDay)
     
-    return sortedEventsByDay.map(({
-      events,
-      incomingRowsCount
-    }, i) => (
+    return sortedEventsByDay.map((events, i) => (
       <div
         key={`day-${i}`}
         className="flex-1"
       >
         {
-          Array(incomingRowsCount).fill().map(r =>
-            <div
-              key={i}
-              style={{
-                height: 24
-              }}
-              className="relative"
-            />
-          )
-        }
-        {
-          events.map((event, i) =>
-            <div
-              key={i}
-              style={{
-                height: 22,
-                width: `calc(100% + (100% * ${event.duration}) - 0.5rem)`
-              }}
-              className={`relative ${i > 0 ? 'mt-0.5' : ''}`}
-            >
-              <div
-                className="absolute min-w-full"
-              >
-                <TimelineBlock
-                  index={i}
-                  baseZIndex={1}
-                  event={event}
-                  isMultiday={true}
+          events.map((event, j) => {
+            if (event.isEmpty) {
+              return (
+                <div
+                  key={`empty-${i}-${j}`}
+                  style={{
+                    height: 22
+                  }}
+                  className={`
+                    relative
+                    ${j > 0 ? 'mt-0.5' : ''}
+                  `}
                 />
-              </div>
-            </div>
-          )
+              )
+            } else {
+              return (
+                <div
+                  key={`event-${i}-${j}`}
+                  style={{
+                    height: 22,
+                    width: `calc(100% + (100% * ${event.duration}) - 0.5rem)`
+                  }}
+                  className={`relative ${j > 0 ? 'mt-0.5' : ''}`}
+                >
+                  <div
+                    className="absolute min-w-full"
+                  >
+                    <TimelineBlock
+                      index={j}
+                      baseZIndex={1}
+                      event={event}
+                      isMultiday={true}
+                    />
+                  </div>
+                </div>
+              )
+            }
+          })
         }
       </div>
     ))

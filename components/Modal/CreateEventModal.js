@@ -281,12 +281,12 @@ const CreateEventModal = () => {
   return (
     <div
       ref={createEventModalRef}
-      className="fixed z-40 flex flex-col bg-white rounded-md cursor-move h-580px min-w-448 bottom-10 left-10 createEventModalBoxShadow"
+      className="fixed z-40 flex flex-col bg-white rounded-md h-580px min-w-448 bottom-10 left-10 createEventModalBoxShadow"
     >
       {/* Header */}
       <div
         className={`
-          flex items-center justify-between px-3 py-1 rounded-t-md bg-opacity-20 transition
+          flex items-center justify-between px-3 py-1 rounded-t-md bg-opacity-20 transition cursor-move
           ${colorLookup[themeColor]}
         `}
         onMouseDown={e => setIsMouseDown(true)}

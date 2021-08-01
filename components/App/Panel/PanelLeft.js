@@ -11,7 +11,7 @@ const PanelLeft = () => {
     const newEventBaseDate = set(new Date(targetDate), {
       hours: getHours(new Date()),
       minutes: getMinutes(new Date())
-    })
+    }).toString()
 
     dispatch(setCreateEventBasis({
       startDate: newEventBaseDate,

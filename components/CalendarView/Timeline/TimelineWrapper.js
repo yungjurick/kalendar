@@ -54,8 +54,8 @@ const TimelineWrapper = ({}) => {
         dates={targetDateRange}
         wholeDayEvents={
           calendarViewType === CalendarViewTypes.DAY_VIEW 
-          ? { 0: dayViewEvents.wholeDayEvents }
-          : weekViewEvents.wholeDayEvents
+          ? { 0: (dayViewEvents.wholeDayEvents || []) }
+          : (weekViewEvents.wholeDayEvents || {})
         }
         calendarViewType={calendarViewType}
       />
