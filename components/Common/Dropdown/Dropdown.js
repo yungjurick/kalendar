@@ -44,7 +44,7 @@ const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute left-0 z-20 py-2 bg-white rounded-md dropdownBoxShadow min-w-168 top-full"
+      className="absolute left-0 z-50 py-2 bg-white rounded-md dropdownBoxShadow min-w-168 top-full"
     >
       {
         data.map((d, i) => {

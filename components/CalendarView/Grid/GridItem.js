@@ -1,17 +1,23 @@
 import { format, getMonth, isSameDay, set } from 'date-fns'
+import { useRouter } from 'next/router'
+import React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { getUpdatedEventBlocksWithPlacement, sortEventBlocks } from '../../../utils/helpers'
+import { useDispatch } from 'react-redux'
+import { setTargetDate } from '../../../reducers/calendar/calendarSettingSlice'
 import CalendarViewGridItemMultiEvent from './GridItemMultiEvent'
 import CalendarViewGridItemSingleEvent from './GridItemSingleEvent'
 
 const CalendarViewGridItem = ({
   index,
+  hoveredEventUid,
+  setHoveredEventUid,
   targetDate,
   month,
   date,
   events
 }) => {
+  const router = useRouter()
+  const dispatch = useDispatch()
   const gridEventContainerRef = useRef(null);
   const [gridEventContainerHeight, setGridEventContainerHeight] = useState(100)
   const today = new Date()
@@ -22,6 +28,11 @@ const CalendarViewGridItem = ({
       setGridEventContainerHeight(height)
     }
   }, [gridEventContainerRef])
+
+  const navigateToDate = () => {
+    router.push('/calendar/day')
+    dispatch(setTargetDate(set(new Date(), { month, date }).toString()))
+  }
 
   const gridItemEvents = (events, containerHeight) => {
     const maxNumOfShowingEvents = Math.floor(containerHeight / 23) - 2
@@ -45,19 +56,28 @@ const CalendarViewGridItem = ({
       } else {
         if (e.duration > -1) {
           return (
-            <CalendarViewGridItemMultiEvent
+            <div
               key={e.eventUid}
-              index={index}
-              data={e}
-            />
+              onMouseOver={() => setHoveredEventUid(e.eventUid)}
+              onMouseLeave={() => setHoveredEventUid('')}
+            >
+              <CalendarViewGridItemMultiEvent
+                index={index}
+                data={e}
+                isHovered={e.eventUid === hoveredEventUid}
+              />
+            </div>
           )
         } else {
           return (
-            <CalendarViewGridItemSingleEvent
+            <div
               key={e.eventUid}
-              index={index}
-              data={e}
-            />
+            >
+              <CalendarViewGridItemSingleEvent
+                index={index}
+                data={e}
+              />
+            </div>
           )
         }
       }
@@ -74,14 +94,18 @@ const CalendarViewGridItem = ({
             {format(set(new Date(), { month, date }), 'EEE').toUpperCase()}
           </p>
         }
-        <div className={`
-          my-1.5 py-0.5 px-2 flex items-center justify-center
-          ${
-            isSameDay(today, set(new Date(), { month, date }))
-            ? 'rounded-full bg-blue-500 text-white font-normal'
-            : month === getMonth(new Date(targetDate)) ? 'text-gray-700 font-medium' : 'text-gray-400 font-medium'
-          }
-        `}>
+        <div
+          className={`
+            my-1.5 py-0.5 px-2 flex items-center justify-center transition cursor-pointer
+            hover:bg-gray-100 rounded-full
+            ${
+              isSameDay(today, set(new Date(), { month, date }))
+              ? 'bg-blue-500 text-white font-normal hover:bg-blue-300'
+              : month === getMonth(new Date(targetDate)) ? 'text-gray-700 font-medium hover:bg-gray-100' : 'hover:bg-gray-100 text-gray-400 font-medium'
+            }
+          `}
+          onClick={() => navigateToDate()}
+        >
           {date === 1 && format(set(new Date(), { month, date }), 'LLL')} {date}
         </div>
       </div>

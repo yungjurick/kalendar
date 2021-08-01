@@ -1,6 +1,6 @@
-import { addDays, closestTo, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
+import { addDays, closestTo, eachHourOfInterval, endOfDay, endOfMonth, endOfWeek, endOfYear, getDate, getDaysInMonth, getHours, getMinutes, getMonth, set, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns'
 import { uuid } from 'uuidv4'
-import { CalendarViewTypes, EventRepeatTypes, ThemeColorTypes } from './types'
+import { CalendarViewTypes, EventRepeatTypes, MINUTE_SEGMENT_INDEX, MINUTE_SEGMENT_KEYS, ThemeColorTypes } from './types'
 
 export const colorLookup = {
   [ThemeColorTypes.RED]: 'bg-red-500',
@@ -228,8 +228,6 @@ export const calculateIncomingRowMatrix = (eventsByDay, isWeek = false) => {
         }
       }
     })
-
-    // count++
   })
 
   return container
@@ -342,7 +340,7 @@ export const getDateRange = (calendarViewType, targetDate) => {
 }
 
 export const getClosestIndexForDayViewEvents = (date) => {
-	const ZERO = set(date, { minutes: 15 })
+	const ZERO = set(date, { minutes: 0 })
 	const FIFTEEN = set(date, { minutes: 15 })
 	const THIRTY = set(date, { minutes: 30 })
 	const FOURTYFIVE = set(date, { minutes: 45 })
@@ -355,4 +353,137 @@ export const getClosestIndexForDayViewEvents = (date) => {
 	])
 
 	return [getHours(date), getMinutes(closest)];
+}
+
+export const findEventCoverage = (event) => {
+	// Get Hour Intervals
+	const coveredHours = eachHourOfInterval({
+	  start: new Date(event.startDate),
+	  end: new Date(event.endDate)
+	});	
+
+	// Get Start/End Date Minute Index
+	const startDateMinuteKey = getClosestIndexForDayViewEvents(new Date(event.startDate))[1];
+	const endDateMinuteKey = getClosestIndexForDayViewEvents(new Date(event.endDate))[1];
+
+	// Covers only one hour block from start date
+	if (coveredHours.length === 1) {
+
+		const startSeg = MINUTE_SEGMENT_INDEX[startDateMinuteKey];
+		
+		// If startSeg and endSeg are the same, add 1 to endSeg in order to get startSeg slice
+		const endSeg = startSeg === MINUTE_SEGMENT_INDEX[endDateMinuteKey]
+			? MINUTE_SEGMENT_INDEX[endDateMinuteKey] + 1
+			: MINUTE_SEGMENT_INDEX[endDateMinuteKey]
+
+		return {
+			[coveredHours[0].toString()]: MINUTE_SEGMENT_KEYS
+        .slice(
+          startSeg,
+          endSeg
+        )
+		}
+	}
+	
+	// Convers more than one hour
+	else {
+		return coveredHours
+
+			// Loop through hours
+			.map((hour, index) => {
+
+				if (index === 0) {
+					return {
+						hour: hour.toString(),
+						minuteSegments: MINUTE_SEGMENT_KEYS
+              .slice(
+                MINUTE_SEGMENT_INDEX[startDateMinuteKey]
+              )
+					}
+				}
+				
+				// Last index may cover portion of the block,
+				// so need to check with endDateMinuteKey
+				if (index === coveredHours.length - 1) {
+					const endSeg = MINUTE_SEGMENT_INDEX[endDateMinuteKey] === 0
+						? MINUTE_SEGMENT_INDEX[endDateMinuteKey] + 1
+						: MINUTE_SEGMENT_INDEX[endDateMinuteKey]					
+
+					return {
+						hour: hour.toString(),
+						minuteSegments: MINUTE_SEGMENT_KEYS
+              .slice(
+                0,
+                endSeg
+              )
+          }     
+				}
+				// Since it covers more than one hour, other index would cover whole
+				else {
+					return {
+						hour: hour.toString(),
+						minuteSegments: [...MINUTE_SEGMENT_KEYS]
+					}
+				}
+			})
+			
+			// Combine as an object format
+			.reduce((acc, cur) => {
+				acc[cur.hour] = cur.minuteSegments;
+				return acc;
+			}, {})
+	}
+}
+
+export const reduceCoverages = (coveragesArray) => {
+	const reducedCoverage = {};
+
+	coveragesArray.forEach(coverage => {
+		const hourKeys = Object.keys(coverage);
+	
+		for (let i = 0; i < hourKeys.length; i++) {
+
+      const hour = getHours(new Date(hourKeys[i]))
+			
+			// If hour does not exist in reducedCoverage, create a segment container object
+			if (!(hour in reducedCoverage)) {
+				reducedCoverage[hour] = {
+					0: 0,
+					15: 0,
+					30: 0,
+					45: 0
+				}
+			}
+			
+			const minuteSegments = coverage[hourKeys[i]];
+			
+			// Increment coverage for segment
+			minuteSegments.forEach(segmentKey => {
+				reducedCoverage[hour][segmentKey]++;
+			})
+		}
+	})
+
+	return reducedCoverage
+}
+
+export const calculateOverlap = (reduceCoverage, hoursObject) => {
+  console.log(reduceCoverage)
+	const coverageHours = Object.keys(reduceCoverage);
+	
+	coverageHours.forEach(hour => {
+		const coverageMinuteSegments = Object.keys(reduceCoverage[hour]);
+		coverageMinuteSegments.forEach(minute => {
+			const coverageCount = reduceCoverage[hour][minute];
+			const { events } = hoursObject[hour][minute];
+			
+			// If coverage count is larger than the events starting at a segment
+			// It means that there is another event starting from before that overlaps
+			if (events.length < coverageCount) {
+				hoursObject[hour][minute]['colCount'] = (coverageCount - events.length) + 1
+				hoursObject[hour][minute]['startColIndex'] = (coverageCount - events.length)
+				hoursObject[hour][minute]['baseZIndex'] = (coverageCount - events.length)
+			} 
+		})
+	})
 }

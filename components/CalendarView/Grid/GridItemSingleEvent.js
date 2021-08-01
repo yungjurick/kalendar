@@ -4,8 +4,6 @@ import { colorLookup } from '../../../utils/helpers'
 const CalendarViewGridItemSingleEvent = ({ data, index }) => {
   const today = startOfDay(new Date());
 
-  console.log(data.startDate, today)
-
   return (
     <div className={`
       relative flex items-center px-2 h-5 overflow-hidden text-xs transition rounded-sm cursor-pointer hover:bg-gray-100

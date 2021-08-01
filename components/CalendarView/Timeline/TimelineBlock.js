@@ -3,6 +3,7 @@ import { colorLookup, getClosestIndexForDayViewEvents } from '../../../utils/hel
 
 const TimelineBlock = ({
   index,
+  startColIndex,
   baseZIndex = 1,
   event,
   isMultiday = false
@@ -23,7 +24,7 @@ const TimelineBlock = ({
       const start = set(new Date(event.startDate), { hours: startHour, minutes: startMinuteSeg })
       const end = set(new Date(event.endDate), { hours: endHour, minutes: endMinuteSeg })
 
-      return (Math.ceil(differenceInMinutes(end, start) / 15) * basePixel)
+      return (Math.floor(differenceInMinutes(end, start) / 15) * basePixel) + (Math.floor(differenceInMinutes(end, start) / 15) - 1)
     } else {
       return 22
     }
@@ -32,15 +33,7 @@ const TimelineBlock = ({
   const blockSubtitle = (blockHeight, isMultiday) => {
     if (!isMultiday) {
       if (blockHeight > 22) {
-        const isStartAndEndSameHour = isSameHour(
-          new Date(event.startDate),
-          new Date(event.endDate)
-        )
-
-        const startTime = isStartAndEndSameHour
-          ? format(new Date(event.startDate), 'K')
-          : format(new Date(event.startDate), 'K:mm aaa')
-
+        const startTime = format(new Date(event.startDate), 'K:mm aaa')
         const endTime = format(new Date(event.endDate), 'K:mm aaa')
 
         return (
@@ -69,8 +62,9 @@ const TimelineBlock = ({
         pt-0.5
         cursor-pointer
         ${colorLookup[event.themeColor]}
-        ${(!isMultiday && index > 0) && 'border-l border-white -ml-2'}
         ${`z-${baseZIndex + index}`}
+        ${startColIndex >  0 ? 'border border-white' : ''}
+        ${(!isMultiday && index > 0) && 'border-l border-white -ml-2'}
       `}
     >
       <div className="absolute min-w-0 font-normal truncate">

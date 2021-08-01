@@ -8,7 +8,7 @@ import { CalendarViewTypes } from '../../utils/types';
 import { addDays, addMonths, addWeeks, addYears, endOfWeek, format, isSameWeek, startOfWeek, subDays, subMonths, subWeeks, subYears } from 'date-fns';
 import { setTargetDate, setViewType } from '../../reducers/calendar/calendarSettingSlice';
 import Dropdown from '../Common/Dropdown/Dropdown';
-// import UserProfile from '../Profile/UserProfile';
+import UserProfileModal from '../Modal/UserProfile';
 
 export const HeaderBar = () => {
   const { photoUrl = '' } = useSelector(state => state.user);
@@ -127,15 +127,15 @@ export const HeaderBar = () => {
         setIsViewTypeDropdownOpen(false);
       }
     },
-    {
-      leftLabel: 'Year',
-      rightLabel: 'Y',
-      onClickHandler: () => {
-        dispatch(setViewType(CalendarViewTypes.YEAR_VIEW))
-        router.push('/calendar/year', undefined, { shallow: true })
-        setIsViewTypeDropdownOpen(false);
-      }
-    }
+    // {
+    //   leftLabel: 'Year',
+    //   rightLabel: 'Y',
+    //   onClickHandler: () => {
+    //     dispatch(setViewType(CalendarViewTypes.YEAR_VIEW))
+    //     router.push('/calendar/year', undefined, { shallow: true })
+    //     setIsViewTypeDropdownOpen(false);
+    //   }
+    // }
   ]
 
   const viewTypeStringLookUp = {
@@ -265,10 +265,10 @@ export const HeaderBar = () => {
             onClickHandler={() => setIsUserProfileOpen(true)}
           />
         </div>
-        {/* {
+        {
           isUserProfileOpen &&
-          <UserProfile onCloseUserProfile={() => setIsUserProfileOpen(false)}/>
-        } */}
+          <UserProfileModal onCloseUserProfile={() => setIsUserProfileOpen(false)}/>
+        }
       </div>
     </div>
   )

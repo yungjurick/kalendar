@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CalendarViewGridItem from './GridItem'
 import { debounce } from 'lodash'
@@ -10,6 +10,7 @@ const CalendarViewGrid = () => {
   const dispatch = useDispatch()
   const { monthViewEvents } = useSelector(state => state.calendar)
   const { targetDate } = useSelector(state => state.calendarSetting)
+  const [hoveredEventUid, setHoveredEventUid] = useState('')
 
   const convertMonthKey = (monthKey, targetDate) => {
     const curMonth = getMonth(new Date(targetDate))
@@ -50,8 +51,6 @@ const CalendarViewGrid = () => {
 
     const updatedContainer = calculateIncomingRowMatrix(flattenedContainer)
 
-    console.log(updatedContainer)
-
     let monthKeys = Object.keys(updatedContainer).sort((a, b) => {
       const splitA = a.split('-')
       const splitB = b.split('-')
@@ -75,6 +74,8 @@ const CalendarViewGrid = () => {
                 updatedContainer[monthDateKey]['incomingRowsMatrix']
               )
             }
+            hoveredEventUid={hoveredEventUid}
+            setHoveredEventUid={setHoveredEventUid}
           />
         )
       })

@@ -19,7 +19,10 @@ const Timeline = ({
         return (
           <div
             key={`${h}-${seg}`}
-            style={{ height: '11px' }}
+            style={{
+              height: '11px',
+              paddingLeft:`calc(2rem * ${startColIndex})`
+            }}
             className={`
               relative flex w-full pr-2 timelineSegmentSpacing
             `}
@@ -30,6 +33,7 @@ const Timeline = ({
                   key={i}
                   index={i}
                   baseZIndex={baseZIndex}
+                  startColIndex={startColIndex}
                   event={e}
                 />
               ))

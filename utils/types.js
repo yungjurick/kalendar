@@ -33,3 +33,12 @@ export const RepeatChangesTypes = {
 	CHANGE: 'change',
 	DELETE: 'delete',
 }
+
+export const MINUTE_SEGMENT_INDEX = {
+	0: 0,
+	15: 1,
+	30: 2,
+	45: 3,
+}
+
+export const MINUTE_SEGMENT_KEYS = Object.keys(MINUTE_SEGMENT_INDEX);

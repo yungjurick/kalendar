@@ -1,5 +1,8 @@
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
+import { useRouter } from 'next/router'
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { setTargetDate } from '../../../reducers/calendar/calendarSettingSlice'
 import { getUpdatedEventBlocksWithPlacement, sortEventBlocks } from '../../../utils/helpers'
 import { CalendarViewTypes } from '../../../utils/types'
 import TimelineBlock from './TimelineBlock'
@@ -9,7 +12,15 @@ const TimelineHeader = ({
   wholeDayEvents = {0: []},
   calendarViewType
 }, ref) => {
-  console.log(wholeDayEvents, calendarViewType)
+  const router = useRouter()
+  const dispatch = useDispatch()
+
+  const navigateToDay = (date) => {
+    if (dates.length > 1) {
+      router.push('/calendar/day')
+      dispatch(setTargetDate(new Date(date).toString()))
+    }
+  }
 
   const hasMultidayEvents = (wholeDayEvents, calendarViewType) => {
     switch (calendarViewType) {
@@ -74,8 +85,6 @@ const TimelineHeader = ({
 
       sortedEventsByDay.push(sundayEvent)
     }
-
-    console.log(wholeDayEvents, sortedEventsByDay)
     
     return sortedEventsByDay.map((events, i) => (
       <div
@@ -146,7 +155,13 @@ const TimelineHeader = ({
                 <span className="flex items-center justify-center h-8 mt-2 font-medium tracking-widest text-gray-600 text-xxs">
                   {format(new Date(date), 'EEE').toUpperCase()}
                 </span>
-                <span className="flex items-center justify-center text-2xl tracking-wider text-gray-700 w-11">
+                <span
+                  className={`
+                    flex items-center justify-center text-2xl transition tracking-wider text-gray-700 -mt-1 w-10 h-10
+                    ${dates.length > 1 ? 'hover:bg-gray-100 rounded-full cursor-pointer' : ''}
+                  `}
+                  onClick={() => navigateToDay(date)}
+                >
                   {format(new Date(date), 'd')}
                 </span>
               </div>
@@ -166,7 +181,7 @@ const TimelineHeader = ({
         <div
           className={`
             w-full pb-1 border-b border-l
-            ${hasMultidayEvents(wholeDayEvents, calendarViewType) && 'mt-4'}
+            ${hasMultidayEvents(wholeDayEvents, calendarViewType) && 'mt-3'}
           `}
         >
           {/* Whole Day Events */}

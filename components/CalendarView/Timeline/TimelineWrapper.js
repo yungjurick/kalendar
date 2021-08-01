@@ -11,8 +11,6 @@ const TimelineWrapper = ({}) => {
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const { dayViewEvents, weekViewEvents } = useSelector(state => state.calendar);
   const [targetDateRange, setTargetDateRange] = useState([]);
-
-  const [headerHeight, setHeaderHeight] = useState(15)
   const [timelineMaxHeight, setTimelineMaxHeight] = useState('calc(100vh - (65px + 43px)')
 
   useEffect(() => {
