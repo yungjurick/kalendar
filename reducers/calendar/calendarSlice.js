@@ -605,6 +605,11 @@ export const calendarSlice = createSlice({
     },
     setIsCreateEventModalOpen: (state, action) => {
       state.isCreateEventModalOpen = action.payload
+    },
+    resetCalendarEvents: (state) => {
+      state.dayViewEvents = {}
+      state.weekViewEvents = {}
+      state.monthViewEvents = {}
     }
   }
 })
@@ -612,7 +617,8 @@ export const calendarSlice = createSlice({
 export const {
   fetchEventsForCalendarType,
   setCreateEventBasis,
-  setIsCreateEventModalOpen
+  setIsCreateEventModalOpen,
+  resetCalendarEvents
 } = calendarSlice.actions
 
 export default calendarSlice.reducer

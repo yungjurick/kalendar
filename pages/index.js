@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { setTargetDate } from '../reducers/calendar/calendarSettingSlice';
+import { resetCalendarEvents } from '../reducers/calendar/calendarSlice';
 import { setDB } from '../reducers/dbSlice';
 import { setCurrentUser } from '../reducers/userSlice';
 import { getInitialEventGroups, getInitialEventInvites, getInitialEvents, getInitialInvited, getInitialUserEvents, getInitialUsers } from '../utils/data';
@@ -15,6 +16,10 @@ export default function Home() {
   const {
     userDB
   } = useSelector(state => state.db.db)
+
+  useEffect(() => {
+    dispatch(resetCalendarEvents())
+  }, [])
 
   useEffect(() => {
     if (!isDBLoaded) {
