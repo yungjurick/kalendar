@@ -7,12 +7,6 @@ const initialState = {
   dayViewEvents: {},
   weekViewEvents: {},
   monthViewEvents: {},
-
-  isCreateEventModalOpen: false,
-  createEventBasis: {
-    startDate: Date(),
-    endDate: Date()
-  }
 }
 
 const getBaseEventContainer = (calendarViewType, targetDate) => {
@@ -170,7 +164,6 @@ const getRepeatedEventBlocks = (sourceEvent, eventGroupDetail, rangeStart, range
   // Loop through the days within the interval to create repeated blocks
   for (let i = 0; i < rangeInterval.length; i++) {
     const changeDateKey = format(rangeInterval[i], 'yyyy-M-d')
-    console.log(changeDateKey)
     let changePayload = {};
 
     // Check whether there is a change in date for repeated event
@@ -611,12 +604,6 @@ export const calendarSlice = createSlice({
 
       console.log("Updated Container", baseEventContainer);
     },
-    setCreateEventBasis: (state, action) => {
-      state.createEventBasis = action.payload
-    },
-    setIsCreateEventModalOpen: (state, action) => {
-      state.isCreateEventModalOpen = action.payload
-    },
     resetCalendarEvents: (state) => {
       state.dayViewEvents = {}
       state.weekViewEvents = {}
@@ -627,8 +614,6 @@ export const calendarSlice = createSlice({
 
 export const {
   fetchEventsForCalendarType,
-  setCreateEventBasis,
-  setIsCreateEventModalOpen,
   resetCalendarEvents
 } = calendarSlice.actions
 

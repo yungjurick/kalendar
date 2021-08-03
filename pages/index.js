@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { setTargetDate } from '../reducers/calendar/calendarSettingSlice';
+import { resetCalendarSettings, setTargetDate } from '../reducers/calendar/calendarSettingSlice';
 import { resetCalendarEvents } from '../reducers/calendar/calendarSlice';
 import { setDB } from '../reducers/dbSlice';
 import { setCurrentUser } from '../reducers/userSlice';
@@ -19,6 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(resetCalendarEvents())
+    dispatch(resetCalendarSettings())
   }, [])
 
   useEffect(() => {

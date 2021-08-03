@@ -1,4 +1,5 @@
-import { differenceInMinutes, format, isSameHour, set } from 'date-fns';
+import { differenceInMinutes, format, set } from 'date-fns';
+import { useRef } from 'react';
 import { colorLookup, getClosestIndexForDayViewEvents } from '../../../utils/helpers';
 
 const TimelineBlock = ({
@@ -6,8 +7,11 @@ const TimelineBlock = ({
   startColIndex,
   baseZIndex = 1,
   event,
-  isMultiday = false
+  isMultiday = false,
+  onClickTimelineBlock
 }) => {
+  const timelineBlockRef = useRef(null)
+
   const getBlockHeight = (event) => {
     if (!isMultiday) {
       const basePixel = 11
@@ -47,8 +51,21 @@ const TimelineBlock = ({
     }
   }
 
+  const handleOnClickBlock = () => {
+    const { top, left, height, width } = timelineBlockRef.current.getBoundingClientRect()
+     
+    onClickTimelineBlock({
+      eventUid: event.eventUid,
+      top: top - 65,
+      left: left - (248),
+      height,
+      width
+    })
+  }
+
   return (
     <div
+      ref={timelineBlockRef}
       style={{ height: `${getBlockHeight(event)}px`}}
       className={`
         relative
@@ -62,10 +79,11 @@ const TimelineBlock = ({
         pt-0.5
         cursor-pointer
         ${colorLookup[event.themeColor]}
-        ${`z-${baseZIndex + index}`}
+        ${`z-${1 + baseZIndex + index}`}
         ${startColIndex >  0 ? 'border border-white' : ''}
         ${(!isMultiday && index > 0) && 'border-l border-white -ml-2'}
       `}
+      onClick={() => handleOnClickBlock()}
     >
       <div className="absolute min-w-0 font-normal truncate">
         {`${event.title}`}

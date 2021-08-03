@@ -10,7 +10,8 @@ import TimelineBlock from './TimelineBlock'
 const TimelineHeader = ({
   dates = [],
   wholeDayEvents = {0: []},
-  calendarViewType
+  calendarViewType,
+  onClickTimelineBlock
 }, ref) => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -53,6 +54,7 @@ const TimelineHeader = ({
             baseZIndex={1}
             event={event}
             isMultiday={true}
+            onClickTimelineBlock={onClickTimelineBlock}
           />
         </div>
       ))
@@ -124,6 +126,7 @@ const TimelineHeader = ({
                       baseZIndex={1}
                       event={event}
                       isMultiday={true}
+                      onClickTimelineBlock={onClickTimelineBlock}
                     />
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { MdAccessTime, MdArrowDropDown, MdCheckBox, MdCheckBoxOutlineBlank, MdCl
 import { useDispatch, useSelector } from 'react-redux'
 import { uuid } from 'uuidv4'
 import { setTargetDate } from '../../reducers/calendar/calendarSettingSlice'
-import { setIsCreateEventModalOpen } from '../../reducers/calendar/calendarSlice'
+import { setIsCreateEventModalOpen } from '../../reducers/calendar/calendarSettingSlice'
 import { addNewEventToDB } from '../../reducers/dbSlice'
 import { colorLookup, isValidTime, repeatTypeStringLookup } from '../../utils/helpers'
 import { EventRepeatTypes, ThemeColorTypes } from '../../utils/types'
@@ -22,7 +22,7 @@ const CreateEventModal = () => {
   const dispatch = useDispatch()
 
   const currentUser = useSelector(state => state.user)
-  const { createEventBasis } = useSelector(state => state.calendar)
+  const { createEventBasis } = useSelector(state => state.calendarSetting)
 
   const [title, setTitle] = useState('')
   const [location, setLocation] = useState('')

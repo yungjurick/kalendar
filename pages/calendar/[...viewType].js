@@ -1,22 +1,25 @@
 import Head from 'next/head'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import  { fetchEventsForCalendarType } from '../../reducers/calendar/calendarSlice'
 import AppLayout from '../../components/App/AppLayout'
 import TimelineWrapper from '../../components/CalendarView/Timeline/TimelineWrapper';
 import { useRouter } from 'next/router';
 import { CalendarViewTypes } from '../../utils/types';
-import { setViewType } from '../../reducers/calendar/calendarSettingSlice';
+import { setSelectedEvent, setViewType } from '../../reducers/calendar/calendarSettingSlice';
 import CalendarViewGrid from '../../components/CalendarView/Grid/Grid';
+import EventDetailModal from '../../components/Modal/EventDetailModal';
 
 const CalendarView = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
+  
   const { query } = router;
 
+  const { targetDate, calendarViewType, selectedEvent } = useSelector(state => state.calendarSetting);
+
   const user = useSelector(state => state.user);
+  const userDB = useSelector(state => state.db.db.userDB);
   const eventDB = useSelector(state => state.db.db.eventDB);
   const userEventDB = useSelector(state => state.db.db.userEventDB);
   const invitedDB = useSelector(state => state.db.db.invitedDB);
@@ -27,6 +30,30 @@ const CalendarView = () => {
     'week': CalendarViewTypes.WEEK_VIEW,
     'month': CalendarViewTypes.MONTH_VIEW,
     'year': CalendarViewTypes.YEAR_VIEW,
+  }
+
+  const selectedCalendarView = (calendarViewType) => {
+    switch(calendarViewType) {
+      case CalendarViewTypes.DAY_VIEW:
+      case CalendarViewTypes.WEEK_VIEW: {
+        return <TimelineWrapper />
+      }
+      case CalendarViewTypes.MONTH_VIEW: {
+        return <CalendarViewGrid />
+      }
+    }
+  }
+
+  const onCloseEventDetailModal = () => {
+    dispatch(setSelectedEvent({
+      ...selectedEvent,
+      eventUid: ''
+    }))
+  }
+
+  const onClickOutsideEventDetailModal = eventUid => {
+    console.log(selectedEvent.eventUid)
+    console.log(eventUid)
   }
 
   useEffect(() => {
@@ -64,18 +91,6 @@ const CalendarView = () => {
       }
     }
   }, [query])
-
-  const selectedCalendarView = (calendarViewType) => {
-    switch(calendarViewType) {
-      case CalendarViewTypes.DAY_VIEW:
-      case CalendarViewTypes.WEEK_VIEW: {
-        return <TimelineWrapper />
-      }
-      case CalendarViewTypes.MONTH_VIEW: {
-        return <CalendarViewGrid />
-      }
-    }
-  }
   
   return (
     <>
@@ -103,6 +118,28 @@ const CalendarView = () => {
           >
             {selectedCalendarView(calendarViewType)}
           </div>
+          {/* Event Detail Modal */}
+          {
+            selectedEvent.eventUid.length > 0 &&
+            selectedEvent.eventUid in eventDB &&
+            (
+              <>
+                <div
+                  className="absolute top-0 left-0 w-full h-full z-1"
+                />
+                <EventDetailModal
+                  selectedEvent={
+                    {
+                      ...selectedEvent,
+                      event: eventDB[selectedEvent.eventUid],
+                      eventCreator: userDB[eventDB[selectedEvent.eventUid].eventCreatorUid]
+                    }
+                  }
+                  onCloseModal={onCloseEventDetailModal}
+                />
+              </>
+            )
+          }
         </AppLayout>
       </main>
     </>

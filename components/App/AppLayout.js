@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import CreateEventModal from '../Modal/CreateEventModal'
-import EditEventModal from '../Modal/EditEventModal'
 import { HeaderBar } from './HeaderBar'
 import PanelLeft from './Panel/PanelLeft'
 import PanelRight from './Panel/PanelRight'
@@ -10,7 +9,7 @@ import PanelRight from './Panel/PanelRight'
 const AppLayout = ({ children }) => {
   const router = useRouter()
   const { query } = router;
-  const { isCreateEventModalOpen } = useSelector(state => state.calendar)
+  const { isCreateEventModalOpen } = useSelector(state => state.calendarSetting)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {

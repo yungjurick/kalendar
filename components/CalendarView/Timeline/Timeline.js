@@ -3,7 +3,8 @@ import TimelineBlock from './TimelineBlock';
 
 const Timeline = ({
   calendarViewType,
-  data = {}
+  data = {},
+  onClickTimelineBlock
 }) => {
   const dayViewTimeline = (data) => {
     return Object.keys(data).map((h, i) => {
@@ -35,6 +36,7 @@ const Timeline = ({
                   baseZIndex={baseZIndex}
                   startColIndex={startColIndex}
                   event={e}
+                  onClickTimelineBlock={onClickTimelineBlock}
                 />
               ))
             }
@@ -71,10 +73,12 @@ const Timeline = ({
   }
 
   return (
-    <div className={`
-      flex-auto w-full h-full border-l
-      ${(calendarViewType === CalendarViewTypes.WEEK_VIEW) ? 'flex divide-x' : '' }
-    `}>
+    <div
+      className={`
+        flex-auto w-full h-full border-l
+        ${(calendarViewType === CalendarViewTypes.WEEK_VIEW) ? 'flex divide-x' : '' }
+      `}
+    >
       {
         calendarViewType === CalendarViewTypes.DAY_VIEW 
         ? dayViewTimeline(data['hours'])

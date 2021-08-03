@@ -1,17 +1,30 @@
 import { eachDayOfInterval, format, getDate, setHours } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedEvent } from '../../../reducers/calendar/calendarSettingSlice';
 import { getDateRange } from '../../../utils/helpers';
 import { CalendarViewTypes } from '../../../utils/types';
 import Timeline from './Timeline';
 import TimelineHeader from './TimelineHeader'
 
-const TimelineWrapper = ({}) => {
+const TimelineWrapper = () => {
   const timelineHeaderRef = useRef(null)
+  const timelineRef = useRef(null)
+  const dispatch = useDispatch()
+
   const { targetDate, calendarViewType } = useSelector(state => state.calendarSetting);
   const { dayViewEvents, weekViewEvents } = useSelector(state => state.calendar);
   const [targetDateRange, setTargetDateRange] = useState([]);
   const [timelineMaxHeight, setTimelineMaxHeight] = useState('calc(100vh - (65px + 43px)')
+
+  const onClickTimelineBlock = (payload) => {
+    // [TODO:]
+    // Need to compare with innerHeight of window to prevent modal from extruding the given client height
+    // console.log(window.innerHeight - 65)
+    // console.log(payload)
+    
+    dispatch(setSelectedEvent(payload))
+  }
 
   useEffect(() => {
     const getDayList = (targetDate, calendarViewType) => {
@@ -42,7 +55,7 @@ const TimelineWrapper = ({}) => {
     setTimelineMaxHeight(
       `calc(100vh - (65px + ${height}px))`
     )
-  }, [targetDate, dayViewEvents, weekViewEvents])
+  }, [targetDate, dayViewEvents, weekViewEvents, timelineHeaderRef])
 
   return (
     <div className="flex flex-col w-full">
@@ -56,9 +69,11 @@ const TimelineWrapper = ({}) => {
           : (weekViewEvents.wholeDayEvents || {})
         }
         calendarViewType={calendarViewType}
+        onClickTimelineBlock={onClickTimelineBlock}
       />
       
       <div
+        ref={timelineRef}
         style={{
           maxHeight: timelineMaxHeight
         }}
@@ -91,6 +106,7 @@ const TimelineWrapper = ({}) => {
           <Timeline
             calendarViewType={calendarViewType}
             data={dayViewEvents}
+            onClickTimelineBlock={onClickTimelineBlock}
           />  
         }
         {
@@ -99,6 +115,7 @@ const TimelineWrapper = ({}) => {
           <Timeline
             calendarViewType={calendarViewType}
             data={weekViewEvents}
+            onClickTimelineBlock={onClickTimelineBlock}
           />  
         }
       </div>
