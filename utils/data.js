@@ -78,7 +78,7 @@ export const getInitialEventGroups = () => {
       groupUid: 'group-0',
       repeatType: EventRepeatTypes.DAILY,
       repeatChanges: {
-        '2021-7-27': {
+        '2021-8-29': {
           type: RepeatChangesTypes.CHANGE,
           payload: {
             title: 'Changed Title'

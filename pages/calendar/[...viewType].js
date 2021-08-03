@@ -58,6 +58,7 @@ const CalendarView = () => {
   useEffect(() => {
     const viewType = query.viewType || []
     if (viewType.length > 0) {
+      console.log(viewType)
       if ((viewType[0] in dayQueryLookUp) && calendarViewType !== dayQueryLookUp[viewType[0]]) {
         dispatch(setViewType(dayQueryLookUp[viewType[0]]))
       }

@@ -129,7 +129,6 @@ export const getBaseWeekViewEvents = () => {
       return acc
     }, {})
   
-  console.log(days);
   return {
     wholeDayEvents,
     days
@@ -468,7 +467,6 @@ export const reduceCoverages = (coveragesArray) => {
 }
 
 export const calculateOverlap = (reduceCoverage, hoursObject) => {
-  console.log(reduceCoverage)
 	const coverageHours = Object.keys(reduceCoverage);
 	
 	coverageHours.forEach(hour => {

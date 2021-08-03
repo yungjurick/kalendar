@@ -169,11 +169,14 @@ const getRepeatedEventBlocks = (sourceEvent, eventGroupDetail, rangeStart, range
 
   // Loop through the days within the interval to create repeated blocks
   for (let i = 0; i < rangeInterval.length; i++) {
-    const changeDateKey = format(rangeInterval[i], 'yyyy-MM-dd')
+    const changeDateKey = format(rangeInterval[i], 'yyyy-M-d')
+    console.log(changeDateKey)
     let changePayload = {};
 
     // Check whether there is a change in date for repeated event
     if (changeDateKey in repeatChanges) {
+      console.log(changeDateKey, "exists")
+
       if (repeatChanges[changeDateKey].type === RepeatChangesTypes.DELETE) {
         continue
       } else {
@@ -337,6 +340,10 @@ const insertEventToDayViewContainer = (
     )
 
     repeatedBlocks.forEach(block => {
+      // TODO: Additional Check for blocks that may have changed dates*
+      // - CHECK start & end-dates
+      // - CHECK duration -> if duration > -1 || isAllDay, then multiday event
+
       const [hour, minute] = getClosestIndexForDayViewEvents(new Date(block.startDate));
       container['hours'][hour][minute]['events'].push(block);
 
@@ -414,6 +421,10 @@ const insertEventToWeekViewContainer = (
 
   // Process Repeated Events
   repeated.forEach(e => {
+    // TODO: Additional Check for blocks that may have changed dates*
+    // - CHECK start & end-dates
+    // - CHECK duration -> if duration > -1 || isAllDay, then multiday event
+
     const eventGroupDetail = eventGroupDB[e.eventGroupUid];
     const repeatedBlocks = getRepeatedEventBlocks(
       e,

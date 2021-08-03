@@ -5,7 +5,7 @@ import { MdMenu, MdKeyboardArrowRight, MdKeyboardArrowLeft, MdArrowDropDown, MdA
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '../Common/Button/IconButton';
 import { CalendarViewTypes } from '../../utils/types';
-import { addDays, addMonths, addWeeks, addYears, endOfWeek, format, isSameWeek, startOfWeek, subDays, subMonths, subWeeks, subYears } from 'date-fns';
+import { addDays, addMonths, addWeeks, addYears, endOfWeek, format, isSameMonth, isSameWeek, startOfWeek, subDays, subMonths, subWeeks, subYears } from 'date-fns';
 import { setTargetDate, setViewType } from '../../reducers/calendar/calendarSettingSlice';
 import Dropdown from '../Common/Dropdown/Dropdown';
 import UserProfileModal from '../Modal/UserProfile';
@@ -28,26 +28,22 @@ export const HeaderBar = () => {
     const tempDate = new Date(date);
 
     switch (typeView) {
-      case CalendarViewTypes.DAY_VIEW: {
+      case CalendarViewTypes.DAY_VIEW:
         return format(tempDate, 'MMMM d, yyyy')
-      }
 
-      case CalendarViewTypes.WEEK_VIEW: {
+      case CalendarViewTypes.WEEK_VIEW:
         const weekStart = startOfWeek(tempDate, { weekStartsOn: 1})
         const weekEnd = endOfWeek(tempDate, { weekStartsOn: 1})
-        return isSameWeek(weekStart, weekEnd)
+
+        return isSameMonth(weekStart, weekEnd)
           ? format(tempDate, 'MMMM yyyy')
           : `${format(weekStart, 'MMM')} - ${format(weekEnd, 'MMM yyyy')}`
-        
-      }
 
-      case CalendarViewTypes.MONTH_VIEW: {
+      case CalendarViewTypes.MONTH_VIEW:
         return format(tempDate, 'MMMM yyyy')
-      }
 
-      case CalendarViewTypes.YEAR_VIEW: {
+      case CalendarViewTypes.YEAR_VIEW:
         return format(tempDate, 'yyyy')
-      }
     }
   }
 
