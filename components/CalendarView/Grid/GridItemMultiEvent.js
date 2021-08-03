@@ -6,8 +6,6 @@ const CalendarViewGridItemMultiEvent = ({
   index,
   isHovered
 }) => {
-  const today = startOfDay(new Date());
-
   return (
     <div
       style={{
@@ -17,7 +15,6 @@ const CalendarViewGridItemMultiEvent = ({
       className={`
         relative rounded-md px-2 z-20 text-white text-xs font-light flex cursor-pointer items-center transition
         ${colorLookup[data.themeColor]}
-        ${isBefore(new Date(data.startDate), today) && 'opacity-50'}
         ${index > 0 ? 'mt-0.5' : ''}
         ${isHovered ? 'bg-opacity-70' : ''}
       `}
