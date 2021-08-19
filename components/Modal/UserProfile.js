@@ -10,9 +10,7 @@ const UserProfileModal = ({
   const { push } = useRouter();
   const currentUser = useSelector(({ user }) => user)
 
-  const handleLogout = () => {
-    push('/');
-  }
+  const handleLogout = () => push('/');
 
   useEffect(() => {
     const checkOutsideClick = (e) => {
@@ -53,7 +51,7 @@ const UserProfileModal = ({
       </div>
       <div className="flex items-center justify-center border-t">
         <div
-          onClick={e => handleLogout()}
+          onClick={() => handleLogout()}
           className="px-6 py-2 my-4 text-sm font-normal border rounded-md cursor-pointer hover:bg-gray-100"
         >
           Logout

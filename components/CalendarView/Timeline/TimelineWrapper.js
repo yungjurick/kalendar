@@ -18,7 +18,7 @@ const TimelineWrapper = () => {
   const [timelineMaxHeight, setTimelineMaxHeight] = useState('calc(100vh - (65px + 43px)')
 
   const onClickTimelineBlock = (payload) => {
-    // [TODO:]
+    // [TODO]
     // Need to compare with innerHeight of window to prevent modal from extruding the given client height
     // console.log(window.innerHeight - 65)
     // console.log(payload)
