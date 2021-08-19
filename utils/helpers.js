@@ -5,11 +5,11 @@ import { CalendarViewTypes, EventRepeatTypes, MINUTE_SEGMENT_INDEX, MINUTE_SEGME
 export const colorLookup = {
   [ThemeColorTypes.RED]: 'bg-red-500',
   [ThemeColorTypes.GREEN]: 'bg-green-500',
-  [ThemeColorTypes.GOLD]: 'bg-gold-3-500',
+  [ThemeColorTypes.GOLD]: 'bg-gold3-500',
   [ThemeColorTypes.BLUE]: 'bg-blue-500',
-  [ThemeColorTypes.CYAN]: 'bg-cyan-7-500',
+  [ThemeColorTypes.CYAN]: 'bg-cyan7-500',
   [ThemeColorTypes.PURPLE]: 'bg-purple-500',
-  [ThemeColorTypes.BROWN]: 'bg-brown-1-500',
+  [ThemeColorTypes.BROWN]: 'bg-brown1-500',
 }
 
 export const repeatTypeStringLookup = {

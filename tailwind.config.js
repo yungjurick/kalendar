@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: false,
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -70,7 +70,7 @@ module.exports = {
         'basis-168': '0 168px'
        },
        colors: {
-        "brown-1": {
+        'brown1': {
           '100': "#EFEBE9",
           '200': "#D7CCC8",
           '300': "#BCAAA4",
@@ -81,7 +81,7 @@ module.exports = {
           '800': "#4E342E",
           '900': "#3E2723"
         },
-        "gold-3": {
+        "gold3": {
           '100': "#FFF8E1",
           '200': "#FFECB3",
           '300': "#FFE082",
@@ -92,7 +92,7 @@ module.exports = {
           '800': "#FF8F00",
           '900': "#FF6F00"
         },
-        "cyan-7": {
+        "cyan7": {
           '100': "#E4FBFE",
           '200': "#C6F6FD",
           '300': "#7CECFA",
